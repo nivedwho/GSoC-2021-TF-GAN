@@ -14,24 +14,6 @@ def download_lr(mode, target_dir):
     source_url = 'http://data.vision.ee.ethz.ch/cvl/DIV2K/' + filename
     tf.keras.utils.get_file(filename, source_url, extract = True)
 
-def scale(lr_img, hr_img, hr_crop_size, scale):
-    """
-    Crops each HR image to hr_crops_size and LR image to hr_crop_size/scale
-    """
-    lr_crop_size = hr_crop_size // scale
-    lr_img_shape = tf.shape(lr_img)[:2]
-
-    lr_w = tf.random.uniform(shape=(), maxval=lr_img_shape[1] - lr_crop_size + 1, dtype=tf.int32)
-    lr_h = tf.random.uniform(shape=(), maxval=lr_img_shape[0] - lr_crop_size + 1, dtype=tf.int32)
-
-    hr_w = lr_w * scale
-    hr_h = lr_h * scale
-
-    lr_img_scaled = lr_img[lr_h:lr_h + lr_crop_size, lr_w:lr_w + lr_crop_size]
-    hr_img_scaled = hr_img[hr_h:hr_h + hr_crop_size, hr_w:hr_w + hr_crop_size]
-
-    return lr_img_scaled, hr_img_scaled
-
 def hr_data(mode, data_dir):
     """
     Download the HR images from DIV2K dataset and return a tf.data.Dataset 
@@ -70,16 +52,6 @@ def lr_data(mode, data_dir):
     ds = ds.map(lambda x: tf.image.decode_png(x, channels=3), num_parallel_calls=AUTOTUNE)
     return ds
 
-def random_flip(lr_img, hr_img):
-    rn = tf.random.uniform(shape=(), maxval=1)
-    return tf.cond(rn < 0.5,
-                   lambda: (lr_img, hr_img),
-                   lambda: (tf.image.flip_left_right(lr_img),
-                            tf.image.flip_left_right(hr_img)))
-
-def random_rotate(lr_img, hr_img):
-    rn = tf.random.uniform(shape=(), maxval=4, dtype=tf.int32)
-    return tf.image.rot90(lr_img, rn), tf.image.rot90(hr_img, rn)
 
 def get_div2k_data(data_dir = None, 
                    mode = 'train',  
