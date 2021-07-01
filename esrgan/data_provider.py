@@ -1,6 +1,7 @@
 import os
 import tensorflow as tf
 from tensorflow.python.data.experimental import AUTOTUNE
+from utils import random_rotate, random_flip, scale
 
 def download_hr(mode, target_dir):
     filename = 'DIV2K_{}_HR.zip'.format(mode)
