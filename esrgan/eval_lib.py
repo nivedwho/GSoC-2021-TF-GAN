@@ -1,4 +1,3 @@
-#calculate fid, is, psnr, after prediction.
 import tensorflow as tf
 from absl import logging
 from utils import get_frechet_inception_distance, get_inception_scores, get_psnr

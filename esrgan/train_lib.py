@@ -9,7 +9,7 @@ import collections, os
 from absl import logging
 from networks import ESRGAN_G, ESRGAN_D
 from losses import pixel_loss, PerceptualLoss, RealitivisticAverageLoss
-from utils import preprocess_input
+from utils import preprocess_input, get_psnr
 
 HParams = collections.namedtuple('HParams', [
     'batch_size','model_dir',
@@ -32,14 +32,14 @@ def warmup_generator(HParams, data):
         data : Dataset consisting of LR and HR image pairs.
     """
 
-    #Stores mean L1 values and PSNR values obtained during training.
+    # Stores mean L1 values and PSNR values obtained during training.
     metric = tf.keras.metrics.Mean()
     psnr_metric = tf.keras.metrics.Mean()
 
-    #If phase_1 training is done and needs to be continued, load the generator model. 
+    # If phase_1 training is done and needs to be continued, load the generator model. 
     if HParams.phase_1: 
         generator = tf.keras.load_model(HParams.model_dir + '/Phase_1/generator/')
-    #If pre-trained generator model is not available, start training from the beginning.
+    # If pre-trained generator model is not available, start training from the beginning.
     else:
         generator = ESRGAN_G()
     
@@ -75,7 +75,7 @@ def warmup_generator(HParams, data):
         
         psnr, gen_loss = _train_step(lr, hr)
         
-        #Calculate the mean loss and PSNR values obtained during training.
+        # Calculate the mean loss and PSNR values obtained during training.
         metric(gen_loss)
         psnr_metric(psnr)
 
@@ -83,11 +83,11 @@ def warmup_generator(HParams, data):
             logging.info("Step: {}\tGenerator Loss: {}\tPSNR: {}".format(
                 step, metric.result(), psnr_metric.result()))
 
-        #Modify the learning rate as mentioned in the paper.
+        # Modify the learning rate as mentioned in the paper.
         if step % HParams.decay_steps == 0:
             G_optimizer.learning_rate.assign(G_optimizer.learning_rate * HParams.decay_factor)
 
-    #Save the generator model inside model_dir, which is then used in phase_2 of training.
+    # Save the generator model inside model_dir, which is then used in phase_2 of training.
     os.makedirs(HParams.model_dir + '/Phase_1/generator', exist_ok = True)
     generator.save(HParams.model_dir + '/Phase_1/generator')
     logging.info("Saved pre-trained generator network succesfully!")
@@ -100,11 +100,11 @@ def train_esrgan(HParams, data):
         HParams : Training parameters as proposed in the paper. 
         data : Dataset consisting of LR and HR image pairs.
     """
-    #If the phase 2 training is done and for re-training the ESRGAN model load the saved generator and discriminator networks.
+    # If the phase 2 training is done and for re-training the ESRGAN model load the saved generator and discriminator networks.
     if HParams.phase_2:
         generator = tf.keras.models.load_model(HParams.model_dir + 'Phase_2/generator/')
         discriminator = tf.keras.models.load_model(HParams.model_dir + 'Phase_2/discriminator/')
-    #If Phase 2 training is not done, then load the pre-trained generator model.
+    # If Phase 2 training is not done, then load the pre-trained generator model.
     else:
         try: 
             generator = tf.keras.models.load_model(HParams.model_dir + '/Phase_1/generator')
@@ -113,15 +113,15 @@ def train_esrgan(HParams, data):
     
         discriminator = ESRGAN_D()
     
-    #Generator learning rate is set as 1 x 10^-4. 
+    # Generator learning rate is set as 1 x 10^-4. 
     G_optimizer = _get_optimizer(lr = 0.0001)
     D_optimizer = _get_optimizer()
 
-    #Define RaGAN loss for generator and discriminator networks.
+    # Define RaGAN loss for generator and discriminator networks.
     ra_gen = RealitivisticAverageLoss(discriminator, type_ = "G")
     ra_disc = RealitivisticAverageLoss(discriminator, type_ = "D")
     
-    #Define the Perceptual loss function and pass 'imagenet' as the weight for the VGG-19 network.
+    # Define the Perceptual loss function and pass 'imagenet' as the weight for the VGG-19 network.
     perceptual_loss = PerceptualLoss(
         weight = "imagenet",
         input_shape = [HParams.hr_size, HParams.hr_size, 3],
@@ -170,7 +170,7 @@ def train_esrgan(HParams, data):
             return gen_loss, disc_loss, psnr
     
     step = 0
-    #Modify learning rate at each of these steps
+    # Modify learning rate at each of these steps
     decay_list = [50000, 100000, 200000, 300000]
     for lr, hr in data.take(HParams.steps):
         step += 1
@@ -187,7 +187,7 @@ def train_esrgan(HParams, data):
             logging.info("Step: {}\tGenerator Loss: {}\tDiscriminator: {}\tPSNR: {}".format(
                 step, gen_metric.result(), disc_metric.result(), psnr_metric.result()))
         
-        #Modify the learning rate as mentioned in the paper.
+        # Modify the learning rate as mentioned in the paper.
         if step >= decay_list[0]: 
             G_optimizer.learning_rate.assign(
               G_optimizer.learning_rate * 0.5)
