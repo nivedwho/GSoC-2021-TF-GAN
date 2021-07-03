@@ -9,7 +9,7 @@ import collections, os
 from absl import logging
 from networks import ESRGAN_G, ESRGAN_D
 from losses import pixel_loss, PerceptualLoss, RealitivisticAverageLoss
-from utils import preprocess_input, get_psnr
+from utils import preprocess_input, get_psnr, visualize_results
 
 HParams = collections.namedtuple('HParams', [
     'batch_size','model_dir',
@@ -21,7 +21,7 @@ HParams = collections.namedtuple('HParams', [
     'beta_1','beta_2', 
     'init_lr','loss_type', 
     'lambda_','eta', 
-    'checkpoint_path'])
+    'image_dir'])
 
 def warmup_generator(HParams, data):
     """ Pre-trains the generator network with pixel-loss as proposed in the paper and
@@ -132,7 +132,7 @@ def train_esrgan(HParams, data):
     disc_metric = tf.keras.metrics.Mean()
     psnr_metric = tf.keras.metrics.Mean()
 
-    def train_step(image_lr, image_hr):
+    def train_step(image_lr, image_hr, step):
         """ Calculates the L1 Loss, Perceptual loss and RaGAN loss, to train both generator and discriminator networks 
             of the ESRGAN model.
         Args : 
@@ -145,6 +145,7 @@ def train_esrgan(HParams, data):
         with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
             gen = generator(image_lr)
             
+
             fake = preprocess_input(gen)
             image_lr = preprocess_input(image_lr)
             image_hr = preprocess_input(image_hr)
@@ -161,6 +162,11 @@ def train_esrgan(HParams, data):
             
             psnr = get_psnr(image_hr, fake)
 
+            if step % HParams.num_steps//1000:
+                visualize_results(image_lr, gen, image_hr, 
+                                image_dir = HParams.image_dir, 
+                                step = step)
+            
             disc_grad = disc_tape.gradient(disc_loss, discriminator.trainable_variables)
             D_optimizer.apply_gradients(zip(disc_grad, discriminator.trainable_variables))
 
@@ -177,7 +183,7 @@ def train_esrgan(HParams, data):
         lr = tf.cast(lr, tf.float32)
         hr = tf.cast(hr, tf.float32)
   
-        gen_loss, disc_loss, psnr = train_step(lr, hr)
+        gen_loss, disc_loss, psnr = train_step(lr, hr, step)
 
         gen_metric(gen_loss)
         disc_metric(disc_loss)

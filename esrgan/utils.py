@@ -2,6 +2,8 @@ import os
 import tensorflow as tf
 import tensorflow_gan as tfgan
 from absl import logging
+import PIL
+import numpy as np
 
 # Utility functions for data processing
 def scale(lr_img, hr_img, hr_crop_size, scale):
@@ -48,6 +50,45 @@ def preprocess_input(image):
     image = image[..., ::-1]
     mean = -tf.constant([103.939, 116.779, 123.68])
     return tf.nn.bias_add(image, mean)
+
+# Utility functions for training
+def visualize_results(image_lr, 
+                      generated, 
+                      image_hr, 
+                      image_dir = '',
+                      step = 0, 
+                      train = True):
+    
+    """ Creates an image grid using Tf-GAN's image grid function and 
+        saves the results as a .png image.
+    
+    Args:
+        image_lr : batch of tensors representing LR images.
+        generated : batch of tensors representing generated images.
+        image_hr : batch of tensors representing HR images.
+        image_dir : Directory to save the results.
+        step : Number of steps completed, for naming purposes. 
+        train : Training or Validation.   
+    """
+    # Resizing all images to 256x256 just for visualization
+    size = 256
+    resized_lr = tf.image.resize(image_lr, [size, size], method=tf.image.ResizeMethod.BILINEAR)
+    resized_gen = tf.image.resize(generated, [size, size], method=tf.image.ResizeMethod.BILINEAR)
+    resized_hr = tf.image.resize(image_hr, [size, size], method=tf.image.ResizeMethod.BILINEAR)
+
+    # Stack an image from the batch of LR, Generated and HR so that image grid can display result in this order.
+    stack = tf.stack([resized_lr[0], resized_gen[0], resized_hr[0]])
+    
+    # Generate an image grid using tf-gan's image grid function.
+    image_grid = tfgan.eval.python_image_grid(resized_lr[:3], grid_shape=(1, 3))
+    result = PIL.Image.fromarray(image_grid.astype(np.uint8))
+    
+    if train:
+        os.makedirs(image_dir + 'training_results', exist_ok= True)
+        result.save(image_dir + 'training_results/' + 'step_{}.png'.format(step))
+    else: 
+        os.makedirs(image_dir + 'validation_results', exist_ok= True)
+        result.save(image_dir + 'validation_results/' + 'step_{}.png'.format(step))
 
 
 def network_interpolation(alpha = 0.2,

@@ -1,6 +1,6 @@
 import tensorflow as tf
 from absl import logging
-from utils import get_frechet_inception_distance, get_inception_scores, get_psnr
+import utils 
 
 def evaluate(hparams, generator, data):
     """ Runs an evaluation loop and calculates the mean FID, Inception and PSNR scores observed
@@ -14,13 +14,19 @@ def evaluate(hparams, generator, data):
     fid_metric = tf.keras.metrics.Mean()
     inc_metric = tf.keras.metrics.Mean()
     psnr_metric = tf.keras.metrics.Mean()
-    
+    step = 0
     for lr, hr in data.take(hparams.num_steps):
+        step += 1
         # Generate fake images for evaluating the model
         gen = generator(lr)
 
+        if step % hparams.num_steps//10:
+            utils.visualize_results(lr, gen, hr, 
+                                image_dir = hparams.image_dir, 
+                                step = step)
+
         # Compute Frechet Inception Distance.
-        fid_score = get_frechet_inception_distance(hr, 
+        fid_score = utils.get_frechet_inception_distance(hr, 
                                                    gen, 
                                                    hparams.batch_size,
                                                    hparams.num_images)
@@ -28,17 +34,17 @@ def evaluate(hparams, generator, data):
 
         # Compute Inception Scores.
         if hparams.eval_real_images: 
-            inc_score = get_inception_scores(hr,
+            inc_score = utils.get_inception_scores(hr,
                                              hparams.batch_size,
                                              hparams.num_inception_images)
         else:
-            inc_score = get_inception_scores(gen,
+            inc_score = utils.get_inception_scores(gen,
                                              hparams.batch_size,
                                              hparams.num_inception_images)
         inc_metric(inc_score)
         
         # Compute PSNR values. 
-        psnr = get_psnr(hr, gen, hparams.batch_size)
+        psnr = utils.get_psnr(hr, gen, hparams.batch_size)
         psnr_metric(psnr)
         
     logging.info('FID Score :{}\tInception Score :{}\tPSNR value{}'
