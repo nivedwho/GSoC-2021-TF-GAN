@@ -82,4 +82,5 @@ def PerceptualLoss(weight = None, input_shape = None, loss_type = "L1"):
       if loss_type.lower() == "l2":
         return tf.reduce_mean(
             tf.reduce_mean((phi(y_true) - phi(y_pred))**2, axis=0))
+            
     return loss

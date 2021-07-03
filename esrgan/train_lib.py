@@ -1,9 +1,6 @@
 
-
 """Train the ESRGAN model
-
 See https://arxiv.org/abs/1809.00219 for details about the model. 
-
 """
 
 import tensorflow as tf
@@ -63,7 +60,7 @@ def warmup_generator(HParams, data):
             fake = generator(image_lr)
             
             gen_loss = pixel_loss(image_hr, fake) * (1.0 / HParams.batch_size)
-            psnr = tf.reduce_mean(tf.image.psnr(fake, image_hr,max_val = 256.0))
+            psnr = get_psnr(hr, fake)
             
             gradient = tape.gradient(gen_loss, generator.trainable_variables)
             G_optimizer.apply_gradients(zip(gradient, generator.trainable_variables))
@@ -147,9 +144,8 @@ def train_esrgan(HParams, data):
         """
         with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
             gen = generator(image_lr)
-            pred = gen
             
-            fake = preprocess_input(fake)
+            fake = preprocess_input(gen)
             image_lr = preprocess_input(image_lr)
             image_hr = preprocess_input(image_hr)
 
@@ -163,7 +159,7 @@ def train_esrgan(HParams, data):
             gen_loss = gen_loss * (1.0 / HParams.batch_size)
             disc_loss = disc_loss * (1.0 / HParams.batch_size)
             
-            psnr = tf.reduce_mean(tf.image.psnr(fake, image_hr, max_val = 256.0))
+            psnr = get_psnr(image_hr, fake)
 
             disc_grad = disc_tape.gradient(disc_loss, discriminator.trainable_variables)
             D_optimizer.apply_gradients(zip(disc_grad, discriminator.trainable_variables))
@@ -174,8 +170,8 @@ def train_esrgan(HParams, data):
             return gen_loss, disc_loss, psnr
     
     step = 0
+    #Modify learning rate at each of these steps
     decay_list = [50000, 100000, 200000, 300000]
-
     for lr, hr in data.take(HParams.steps):
         step += 1
         lr = tf.cast(lr, tf.float32)

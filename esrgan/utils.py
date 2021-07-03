@@ -49,6 +49,28 @@ def preprocess_input(image):
     mean = -tf.constant([103.939, 116.779, 123.68])
     return tf.nn.bias_add(image, mean)
 
+
+def network_interpolation(alpha = 0.2,
+                          phase_1_path = None,
+                          phase_2_path = None):
+    """ Network interpolation as explained in section 3.4 in the paper, that basically balances
+    the effect of PSNR oriented methods and GAN based methods. 
+    Args:
+        alpha : interpolation parameter. 
+        phase_1_path : path to the network saved after phase 1 training. 
+        phase_2_path : path to the network saved after phase 2 training.
+    Returns: 
+        Interpolated generator network.  
+    
+    """
+    psnr_generator = tf.keras.model.load_model(phase_1_path)
+    gan_generator = tf.keras.models.load_model(phase_2_path)
+
+    for variables_1, variables_2 in zip(gan_generator.trainable_variables, psnr_generator.trainable_variables):
+        variables_1.assign((1 - alpha) * variables_2 + alpha * variables_1)
+
+    return gan_generator
+
 # Utility functions for evaluation
 def get_frechet_inception_distance(real_images, generated_images, batch_size,
                                    num_inception_images):
@@ -119,3 +141,15 @@ def get_inception_scores(images, batch_size, num_inception_images):
         resized_images, num_batches=num_batches)
 
     return inc_score
+
+def get_psnr(real, generated):
+    """Calculate PSNR values for the given samples of images.
+
+    Args: 
+        real: batch of tensors representing real images.
+        generated : batch of tensors representing generated images. 
+    
+    Returns:
+        PSNR value for the given batch of real and generated images.
+    """
+    return tf.reduce_mean(tf.image.psnr(generated, real, max_val = 256.0))
