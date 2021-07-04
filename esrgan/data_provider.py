@@ -7,13 +7,13 @@ def download_hr(mode, target_dir):
     filename = 'DIV2K_{}_HR.zip'.format(mode)
     os.makedirs(target_dir, exist_ok=True)
     source_url = 'http://data.vision.ee.ethz.ch/cvl/DIV2K/' + filename 
-    tf.keras.utils.get_file(filename, source_url, extract = True)
+    tf.keras.utils.get_file(filename, source_url, cache_subdir=target_dir, extract = True)
 
 def download_lr(mode, target_dir):
     filename = 'DIV2K_{}_LR_bicubic_X4.zip'.format(mode)
     os.makedirs(target_dir, exist_ok=True)
     source_url = 'http://data.vision.ee.ethz.ch/cvl/DIV2K/' + filename
-    tf.keras.utils.get_file(filename, source_url, extract = True)
+    tf.keras.utils.get_file(filename, source_url, cache_subdir=target_dir, extract = True)
 
 def hr_data(mode, data_dir):
     """
