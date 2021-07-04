@@ -15,7 +15,7 @@ HParams = collections.namedtuple('HParams', [
     'batch_size','model_dir',
     'phase_1', 'phase_2',
     'hr_dimension','data_dir',
-    'manual', 'print_steps',
+    'print_steps',
     'total_steps', 'decay_steps',
     'decay_factor', 'lr', 
     'beta_1','beta_2', 
@@ -23,7 +23,7 @@ HParams = collections.namedtuple('HParams', [
     'lambda_','eta', 
     'image_dir'])
 
-def warmup_generator(HParams, data):
+def pretrain_generator(HParams, data):
     """ Pre-trains the generator network with pixel-loss as proposed in the paper and
         saves the network inside the model directory specified.  
     
@@ -114,7 +114,7 @@ def train_esrgan(HParams, data):
         discriminator = ESRGAN_D()
     
     # Generator learning rate is set as 1 x 10^-4. 
-    G_optimizer = _get_optimizer(lr = 0.0001)
+    G_optimizer = _get_optimizer(lr = HParams.init_lr)
     D_optimizer = _get_optimizer()
 
     # Define RaGAN loss for generator and discriminator networks.
@@ -202,6 +202,20 @@ def train_esrgan(HParams, data):
                 D_optimizer.learning_rate * 0.5)
             
             decay_list.pop(0)
+    
+        
+    # Save the generator model inside model_dir, which is then used for network interpolation.
+    os.makedirs(HParams.model_dir + '/Phase_2/generator', exist_ok = True)
+    generator.save(HParams.model_dir + '/Phase_2/generator')
+    logging.info("Saved trained ESRGAN generator succesfully!")
+
+    interpolated_generator = utils.network_interpolation(phase_1_path = hparams.model_dir + '/phase_1/generator/',
+                                                         phase_2_path = hparams.model_dir + '/phase_2/generator/')
+
+    #Save interpolated generator
+    os.makedirs(HParams.model_dir + '/Phase_2/interpolated_generator', exist_ok = True)
+    generator.save(HParams.model_dir + '/Phase_2/interpolated_generator')
+    logging.info("Saved interpolated generator network succesfully!")
         
 def _get_optimizer(lr = 0.0002):
     """Returns the Adam optimizer with the specified learning rate."""

@@ -1,6 +1,12 @@
 import tensorflow as tf
 from absl import logging
 import utils 
+import collections
+
+HParams = collections.namedtuple('HParams', [
+    'batch_size', 'num_steps',
+    'num_images', 'image_dir',
+    'eval_real_images', 'num_inception_images'])
 
 def evaluate(hparams, generator, data):
     """ Runs an evaluation loop and calculates the mean FID, Inception and PSNR scores observed
