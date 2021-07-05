@@ -9,7 +9,7 @@ import collections, os
 from absl import logging
 from networks import ESRGAN_G, ESRGAN_D
 from losses import pixel_loss, PerceptualLoss, RealitivisticAverageLoss
-from utils import preprocess_input, get_psnr, visualize_results
+from utils import preprocess_input, get_psnr, visualize_results, network_interpolation
 
 HParams = collections.namedtuple('HParams', [
     'batch_size','model_dir',
@@ -209,8 +209,8 @@ def train_esrgan(HParams, data):
     generator.save(HParams.model_dir + '/Phase_2/generator')
     logging.info("Saved trained ESRGAN generator succesfully!")
 
-    interpolated_generator = utils.network_interpolation(phase_1_path = hparams.model_dir + '/phase_1/generator/',
-                                                         phase_2_path = hparams.model_dir + '/phase_2/generator/')
+    interpolated_generator = network_interpolation(phase_1_path = HParams.model_dir + '/phase_1/generator/',
+                                                   phase_2_path = HParams.model_dir + '/phase_2/generator/')
 
     #Save interpolated generator
     os.makedirs(HParams.model_dir + '/Phase_2/interpolated_generator', exist_ok = True)

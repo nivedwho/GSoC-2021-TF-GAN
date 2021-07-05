@@ -15,13 +15,16 @@ def download_lr(mode, target_dir):
     source_url = 'http://data.vision.ee.ethz.ch/cvl/DIV2K/' + filename
     tf.keras.utils.get_file(filename, source_url, cache_subdir=target_dir, extract = True)
 
-def hr_data(mode, data_dir):
+def hr_data(mode, data_dir, download_hr):
     """
     Download the HR images from DIV2K dataset and return a tf.data.Dataset 
     consisting of tensors of HR images. 
     """
     target_dir = data_dir + 'HR_{}_data'.format(mode)
-    download_hr(mode, target_dir)
+    
+    # Option to skip downloading if already downloaded the images.
+    if download_hr:
+        download_hr(mode, target_dir)
     
     start_index = 1 if mode == 'train' else 801
     end_index = 801 if mode == 'train' else 901
@@ -35,13 +38,17 @@ def hr_data(mode, data_dir):
 
     return ds
 
-def lr_data(mode, data_dir):
+def lr_data(mode, data_dir, download_lr):
     """
     Download the LR images from DIV2K dataset and return a tf.data.Dataset 
     consisting of tensors of LR images. 
     """
     target_dir = data_dir + 'LR_{}_data'.format(mode)
-    download_lr(mode, target_dir)
+
+    # Option to skip downloading if already downloaded the images.
+    if download_lr: 
+        download_lr(mode, target_dir)
+    
     start_index = 1 if mode == 'train' else 801
     end_index = 801 if mode == 'train' else 901
     
@@ -56,6 +63,8 @@ def lr_data(mode, data_dir):
 
 def get_div2k_data(data_dir = None, 
                    mode = 'train',  
+                   download_hr = True,
+                   download_lr = True,
                    augment = False, 
                    HR_size = 256, 
                    batch_size = 32,
@@ -66,6 +75,8 @@ def get_div2k_data(data_dir = None,
     Args:
         data_dir : Path to the directory where the dataset will be stored.
         mode : Either 'train' or 'valid'.
+        download_hr : Whether to download the DIV2K dataset HR images. 
+        download_lr : Whether to download the DIV2K dataset LR images. 
         augment : Whether to augment the data.
         HR_size : Height/Width of the High Resolution Image. 
         batch_size : Training batch size 
@@ -80,7 +91,7 @@ def get_div2k_data(data_dir = None,
          TypeError : If the data directory(data_dir) is not specified.
     """
 
-    ds = tf.data.Dataset.zip((lr_data(mode, data_dir), hr_data(mode, data_dir)))
+    ds = tf.data.Dataset.zip((lr_data(mode, data_dir, download_lr), hr_data(mode, data_dir, download_hr)))
     ds = ds.map(lambda lr, hr: scale(lr, hr, HR_size, Scale), num_parallel_calls=AUTOTUNE)
     
     if augment:

@@ -5,8 +5,8 @@ import collections
 
 HParams = collections.namedtuple('HParams', [
     'batch_size', 'num_steps',
-    'num_images', 'image_dir',
-    'eval_real_images', 'num_inception_images'])
+    'num_inception_images', 'image_dir',
+    'eval_real_images'])
 
 def evaluate(hparams, generator, data):
     """ Runs an evaluation loop and calculates the mean FID, Inception and PSNR scores observed
@@ -33,9 +33,9 @@ def evaluate(hparams, generator, data):
 
         # Compute Frechet Inception Distance.
         fid_score = utils.get_frechet_inception_distance(hr, 
-                                                   gen, 
-                                                   hparams.batch_size,
-                                                   hparams.num_images)
+                                                        gen, 
+                                                        hparams.batch_size,
+                                                        hparams.num_inception_images)
         fid_metric(fid_score)
 
         # Compute Inception Scores.
