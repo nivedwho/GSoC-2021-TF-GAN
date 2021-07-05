@@ -80,7 +80,7 @@ def visualize_results(image_lr,
     stack = tf.stack([resized_lr[0], resized_gen[0], resized_hr[0]])
     
     # Generate an image grid using tf-gan's image grid function.
-    image_grid = tfgan.eval.python_image_grid(resized_lr[:3], grid_shape=(1, 3))
+    image_grid = tfgan.eval.python_image_grid(stack, grid_shape=(1, 3))
     result = PIL.Image.fromarray(image_grid.astype(np.uint8))
     
     if train:
