@@ -2,6 +2,7 @@
 
 #### Todo :
 * Add Images here after completing the training. 
+* Add links to the trained models
 * Test scripts for each of the files.  
 ### How to run
 1. Run the setup instructions in [tensorflow_gan/examples/README.md](https://github.com/tensorflow/gan/blob/master/tensorflow_gan/examples/README.md#steps-to-run-an-example)
