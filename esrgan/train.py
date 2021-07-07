@@ -39,7 +39,7 @@ def main(_):
                                 FLAGS.loss_type, FLAGS.lamda_, 
                                 FLAGS.eta, FLAGS.image_dir)
 
-    data = data_provider.get_div2k_data(data_dir = hparams.data_dir)
+    data = data_provider.get_div2k_data(hparams, mode = 'train')
     train_lib.pretrain_generator(hparams, data)
     train_lib.train_esrgan(hparams, data)
 
