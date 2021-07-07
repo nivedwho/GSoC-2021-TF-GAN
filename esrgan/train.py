@@ -4,7 +4,8 @@ from absl import logging
 import tensorflow as tf
 import train_lib, data_provider, utils
 
-# ML Hparams.
+from absl import app
+
 flags.DEFINE_integer('batch_size', 32, 'The number of images in each batch.')
 flags.DEFINE_string('model_dir', '/content/', 'Directory to save and load trained models')
 flags.DEFINE_boolean('phase_1', False, 'Whether Phase 1 training is done or not')
@@ -27,12 +28,13 @@ flags.DEFINE_string('image_dir', 'L1', 'Directory to save images generated durin
 
 FLAGS = flags.FLAGS
 
-def main():
+def main(_):
     hparams = train_lib.HParams(FLAGS.batch_size, FLAGS.model_dir,
                                 FLAGS.phase_1, FLAGS.phase_2,
                                 FLAGS.hr_dimension, FLAGS.data_dir,
                                 FLAGS.print_steps, FLAGS.total_steps,
-                                FLAGS.decay_steps, FLAGS.beta_1, 
+                                FLAGS.decay_steps, FLAGS.decay_factor,
+                                FLAGS.lr, FLAGS.beta_1, 
                                 FLAGS.beta_2, FLAGS.init_lr,
                                 FLAGS.loss_type, FLAGS.lamda_, 
                                 FLAGS.eta, FLAGS.image_dir)
@@ -42,4 +44,5 @@ def main():
     train_lib.train_esrgan(hparams, data)
 
 if __name__ == '__main__':
-    main()
+    logging.set_verbosity(logging.INFO)
+    app.run(main)
