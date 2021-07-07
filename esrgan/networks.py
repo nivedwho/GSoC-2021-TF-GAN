@@ -51,15 +51,13 @@ def RRDB(input):
     return out
 
 
-def upsample(x, number, use_bias):
+def upsample(x, number, use_bias = True):
     x = Conv2DTranspose(32, kernel_size= [3,3], strides=[2,2], padding='same', use_bias = use_bias)(x)
     return x
 
-def ESRGAN_G(num_filters = 32,
-             hr_size = 256,
-             out_channels = 3,
-             trunk_size = 3,
-             use_bias = True):
+def ESRGAN_G(HParams, 
+             num_filters = 64,
+             out_channels = 3):
     """
     The Generator network for ESRGAN consisting of Residual in Residual Block as the 
     basic building unit. 
@@ -67,7 +65,6 @@ def ESRGAN_G(num_filters = 32,
     Args : 
         num_filters : Number of num_filters for the convolutional layers used. 
         out_channels : Number of channels for the generated image. 
-        trunk_size : Number of RRDB blocks to be used. 
         use_bias : Whether to use bias or not for the convolutional layers. 
     
     Returns:
@@ -76,51 +73,47 @@ def ESRGAN_G(num_filters = 32,
             inputs -> Batch of tensors representing LR images.
             outputs -> Batch of generated HR images. 
     """
-    lr_input = Input(shape=(hr_size, hr_size, 3))
+    lr_input = Input(shape=(HParams.hr_dimension//HParams.scale, HParams.hr_dimension//HParams.scale, 3))
     
-    x = Conv2D(32, kernel_size= [3,3], strides=[1,1], padding='same', use_bias = use_bias)(lr_input)
+    x = Conv2D(32, kernel_size= [3,3], strides=[1,1], padding='same', use_bias = True)(lr_input)
     x = LeakyReLU(0.2)(x)
 
     ref = x
     
-    for i in range(trunk_size):
+    for i in range(HParams.trunk_size):
         x = RRDB(x)
 
-    x = Conv2D(32, kernel_size= [3,3], strides=[1,1], padding='same', use_bias = use_bias)(x)
+    x = Conv2D(32, kernel_size= [3,3], strides=[1,1], padding='same', use_bias = True)(x)
     x = Add()([x, ref])
 
-    x = upsample(x, 1, use_bias = use_bias)
+    x = upsample(x, 1)
     x = LeakyReLU(0.2)(x)
 
-    x = upsample(x, 2, use_bias = use_bias)
+    x = upsample(x, 2)
     x = LeakyReLU(0.2)(x)
     
-    x = Conv2D(32, kernel_size= [3,3], strides=[1,1], padding='same', use_bias = use_bias)(x)
+    x = Conv2D(32, kernel_size= [3,3], strides=[1,1], padding='same', use_bias = True)(x)
     x = LeakyReLU(0.2)(x)
 
-    hr_output = Conv2D(out_channels, kernel_size= [3,3], strides=[1,1], padding='same', use_bias = use_bias)(x)
+    hr_output = Conv2D(out_channels, kernel_size= [3,3], strides=[1,1], padding='same', use_bias = True)(x)
 
     model = Model(inputs=lr_input, outputs=hr_output)
     return model
 
 
-def ESRGAN_D(num_filters = 64,
-             strides = 2, 
-             hr_size = 256):
+def ESRGAN_D(num_filters = 64):
     """
     The discriminator network for ESRGAN. 
 
     Args :
         num_filters : Number of filters to be used in the first convolutional layer
-        strides : Value of strides for the convolutional operations
-        hr_size : Dimension of HR images
     Returns : 
         The compiled model of the discriminator network where the inputs and outputs 
         of the model are defined as : 
             inputs -> Batch of tensors representing HR images.
             outputs -> Predictions for batch of input images. 
     """
-    img = Input(shape = (hr_size, hr_size, 3))
+    img = Input(shape = (None, None, 3))
     
     x = _conv_block_d(img, num_filters, bn=False)
     x = _conv_block_d(x, filters = num_filters, strides = strides)
