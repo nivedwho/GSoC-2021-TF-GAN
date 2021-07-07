@@ -61,27 +61,20 @@ def lr_data(mode, data_dir, download_lr_data):
     return ds
 
 
-def get_div2k_data(data_dir = None, 
+def get_div2k_data(HParams,
                    mode = 'train',  
                    download_hr_data = True,
                    download_lr_data = True,
                    augment = False, 
-                   HR_size = 256, 
-                   batch_size = 32,
-                   Scale = 4,
                    repeat_count = None):
 
     """ Downloads and loads DIV2K dataset.
     Args:
-        data_dir : Path to the directory where the dataset will be stored.
+        HParams : For getting values for parameters such as data directory, batch size etc.
         mode : Either 'train' or 'valid'.
         download_hr : Whether to download the DIV2K dataset HR images. 
         download_lr : Whether to download the DIV2K dataset LR images. 
         augment : Whether to augment the data.
-        HR_size : Height/Width of the High Resolution Image. 
-        batch_size : Training batch size 
-        Scale : Factor by which super resolution is performed. 
-                Dimension of an LR image would be HR_size/Scale.
         repeat_count : Repetition of data while training. 
     
     Returns:
@@ -91,14 +84,14 @@ def get_div2k_data(data_dir = None,
          TypeError : If the data directory(data_dir) is not specified.
     """
 
-    ds = tf.data.Dataset.zip((lr_data(mode, data_dir, download_lr), hr_data(mode, data_dir, download_hr)))
-    ds = ds.map(lambda lr, hr: scale(lr, hr, HR_size, Scale), num_parallel_calls=AUTOTUNE)
+    ds = tf.data.Dataset.zip((lr_data(mode, HParams.data_dir, download_lr), hr_data(mode, HParams.data_dir, download_hr)))
+    ds = ds.map(lambda lr, hr: scale(lr, hr, HParams.hr_dimension, HParams.scale), num_parallel_calls=AUTOTUNE)
     
     if augment:
         ds = ds.map(random_rotate, num_parallel_calls=AUTOTUNE)
         ds = ds.map(random_flip, num_parallel_calls=AUTOTUNE)
 
-    ds = ds.batch(batch_size)
+    ds = ds.batch(HParams.batch_size)
     ds = ds.repeat(repeat_count)
     ds = ds.prefetch(buffer_size=AUTOTUNE)
 
