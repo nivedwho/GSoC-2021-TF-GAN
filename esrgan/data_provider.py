@@ -15,7 +15,7 @@ def download_lr(mode, target_dir):
     source_url = 'http://data.vision.ee.ethz.ch/cvl/DIV2K/' + filename
     tf.keras.utils.get_file(filename, source_url, cache_subdir=target_dir, extract = True)
 
-def hr_data(mode, data_dir, download_hr):
+def hr_data(mode, data_dir, download_hr_data):
     """
     Download the HR images from DIV2K dataset and return a tf.data.Dataset 
     consisting of tensors of HR images. 
@@ -23,7 +23,7 @@ def hr_data(mode, data_dir, download_hr):
     target_dir = data_dir + 'HR_{}_data'.format(mode)
     
     # Option to skip downloading if already downloaded the images.
-    if download_hr:
+    if download_hr_data:
         download_hr(mode, target_dir)
     
     start_index = 1 if mode == 'train' else 801
@@ -38,7 +38,7 @@ def hr_data(mode, data_dir, download_hr):
 
     return ds
 
-def lr_data(mode, data_dir, download_lr):
+def lr_data(mode, data_dir, download_lr_data):
     """
     Download the LR images from DIV2K dataset and return a tf.data.Dataset 
     consisting of tensors of LR images. 
@@ -46,7 +46,7 @@ def lr_data(mode, data_dir, download_lr):
     target_dir = data_dir + 'LR_{}_data'.format(mode)
 
     # Option to skip downloading if already downloaded the images.
-    if download_lr: 
+    if download_lr_data: 
         download_lr(mode, target_dir)
     
     start_index = 1 if mode == 'train' else 801
@@ -63,8 +63,8 @@ def lr_data(mode, data_dir, download_lr):
 
 def get_div2k_data(data_dir = None, 
                    mode = 'train',  
-                   download_hr = True,
-                   download_lr = True,
+                   download_hr_data = True,
+                   download_lr_data = True,
                    augment = False, 
                    HR_size = 256, 
                    batch_size = 32,
