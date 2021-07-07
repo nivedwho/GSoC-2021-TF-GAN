@@ -12,10 +12,11 @@ from losses import pixel_loss, PerceptualLoss, RealitivisticAverageLoss
 from utils import preprocess_input, get_psnr, visualize_results, network_interpolation
 
 HParams = collections.namedtuple('HParams', [
-    'batch_size','model_dir',
+    'batch_size', 'scale',
+    'model_dir',
     'phase_1', 'phase_2',
     'hr_dimension','data_dir',
-    'print_steps',
+    'print_steps', 'trunk_size',
     'total_steps', 'decay_steps',
     'decay_factor', 'lr', 
     'beta_1','beta_2', 
@@ -41,7 +42,7 @@ def pretrain_generator(HParams, data):
         generator = tf.keras.load_model(HParams.model_dir + '/Phase_1/generator/')
     # If pre-trained generator model is not available, start training from the beginning.
     else:
-        generator = ESRGAN_G()
+        generator = ESRGAN_G(HParams)
     
     G_optimizer = _get_optimizer()
     
