@@ -9,6 +9,8 @@
   <a href="https://summerofcode.withgoogle.com/projects/#4563139045097472">Project Link</a> |
   <a href="https://github.com/tensorflow/gan">TF-GAN Library</a>
 </p>
+<br>
+
 ## Project Abstract
 
 [TensorFlow GAN](https://github.com/tensorflow/gan) is a lightweight library for training and evaluating Generative Adversarial Networks. Through this GSoC project I will be implementing more variants of GANs that are more recent and have more applications, using TF-GAN which will be then added as examples to the library.
