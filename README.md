@@ -3,7 +3,7 @@
   <a href="https://summerofcode.withgoogle.com/projects/#4563139045097472">
     <img src="images/readme.jpg" alt="Logo" width="600" height="400">
   </a>
-  <h3 align="center">Improving TensorFlow GAN library</h3>
+  <h1 align="center">Improving TensorFlow GAN library</h1>
 </p>
 <p align="center">
   <a href="https://summerofcode.withgoogle.com/projects/#4563139045097472">Project Link</a> |
