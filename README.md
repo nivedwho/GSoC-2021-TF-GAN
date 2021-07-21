@@ -18,7 +18,7 @@
 
 **Mentor**: [@margaretmz](https://github.com/margaretmz)
 
-### Task
+## Tasks
 |Tasks|Reference|Status|
 |:-:|:-:|:-:|
 |Train and Evaluate ESRGAN model.|[Here](esrgan)| :heavy_check_mark: |
