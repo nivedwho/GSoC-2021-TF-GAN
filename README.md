@@ -22,9 +22,9 @@
 |Tasks|Reference|Status|
 |:-:|:-:|:-:|
 |Train and Evaluate ESRGAN model.|[Here](esrgan)| :heavy_check_mark: |
-|Write Colab notebook demonstrating the process of training ESRGAN and also exploring different functionalities of TF-GAN. |[Here](esrgan/colab_notebook)|  :heavy_check_mark:|
+|Write Colab notebook for training ESRGAN and exploring different functionalities of TF-GAN. |[Here](esrgan/colab_notebook)|  :heavy_check_mark:|
 |Train and Evaluate ControlGAN model.|Here| Ongoing |
-|Write Colab notebook demonstrating the process of training ControlGAN and also exploring different functionalities of TF-GAN. |Here| Ongoing |
+|Write Colab notebook for training ControlGAN and exploring different functionalities of TF-GAN. |Here| Ongoing |
 |Add TPU support for both ESRGAN and ControlGAN.|Here| Pending |
 |Work on new datasets.|Here| Pending |
 |Write blog posts/tutorials for ControlGAN.|Here| Pending |
