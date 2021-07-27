@@ -159,7 +159,7 @@ class INIT_STAGE_G(tf.keras.layers.Layer):
     model += [upBlock(self.gf // 8, name='up_block_3')]        
     model += [upBlock(self.gf // 16, name='up_block_4')]
       
-    return tf.keras.Model.Sequential(model)
+    return Sequential(model)
 
   def call(self, c_z_code, training=True, mask=None):
     h_code = self.model(c_z_code, training=training)
@@ -197,28 +197,10 @@ class NEXT_STAGE_G(tf.keras.layers.Layer):
 
     return c_code, h_code
 
-class GET_IMAGE_G(tf.keras.layers.Layer):
-  def __init__(self, ngf):
-    super(GET_IMAGE_G, self).__init__()
-    self.gf_dim = ngf
-    self.model = self._build()
-
-  def _build(self):
-    model = []
-    model += [conv3x3(3)]
-    model += [tf.keras.layers.Activation(tf.keras.activations.tanh)]
-    return tf.keras.Sequential(model)
-
-  def call(self, h_code):
-    out_img = self.model(h_code)
-    return out_img
-
-class G_NET(tf.keras.Model):
+class Generator(tf.keras.Model):
   def __init__(self, ngf, name='Generator'):
-    super(G_NET, self).__init__(name=name)
+    super(Generator, self).__init__(name=name)
     self.ngf = ngf
-
-    self.ca_net = CA_NET(self.z_dim)
 
     self.h_net1 = INIT_STAGE_G(self.ngf * 16)
     self.img_net1 = GET_IMAGE_G(self.ngf)
@@ -235,7 +217,7 @@ class G_NET(tf.keras.Model):
     fake_imgs = []
     att_maps = []
 
-    c_code, mu, logvar = self.ca_net(sent_emb)
+    c_code, mu, logvar = conditional_augmentation(sent_emb)
 
     c_z_code = tf.concat([c_code, z_code], axis=-1)
 
@@ -252,3 +234,119 @@ class G_NET(tf.keras.Model):
     fake_imgs.append(fake_img3)
 
     return fake_imgs
+ 
+
+def block3x3_leakyRelu(ngf):
+  block = []
+  block += [conv3x3(ngf)]
+  block += [tf.keras.layers.BatchNormalization(momentum=0.9, epsilon=1e-5, center=True, scale=True)]
+  block += [tf.keras.layers.LeakyReLU(0.2)]
+  return tf.keras.Model.Sequential(block)
+
+def downBlock(ngf):
+  block = []
+  block += [tf.keras.layers.Conv2D(ngf, kernel_size= 4, strides = 2, padding="same", use_bias=False)]
+  block += [tf.keras.layers.BatchNormalization(momentum=0.9, epsilon=1e-5, center=True, scale=True)]
+  block += [tf.keras.layers.Activation(tf.keras.layers.LeakyReLU(0.2))]
+  return tf.keras.Model.Sequential(block)
+
+def encode_image_by_16times(ndf):
+  block = []
+  block += [tf.keras.layers.Conv2D(ndf, kernel_size=4, strides=2, padding="same", use_bias=False)]
+  block += [tf.keras.layers.LeakyReLU(0.01)]
+  
+  block += [tf.keras.layers.Conv2D(ndf * 2, kernel_size=3, strides=1, padding="same", use_bias=False)]
+  block += [tf.keras.layers.BatchNormalization(momentum=0.9, epsilon=1e-5, center=True, scale=True)]
+  block += [tf.keras.layers.LeakyReLU(0.2)]
+
+  block += [tf.keras.layers.Conv2D(ndf * 4, kernel_size=3, strides=1, padding="same", use_bias=False)]
+  block += [tf.keras.layers.BatchNormalization(momentum=0.9, epsilon=1e-5, center=True, scale=True)]
+  block += [tf.keras.layers.LeakyReLU(0.2)]
+ 
+  block += [tf.keras.layers.Conv2D(ndf * 8, kernel_size=3, strides=1, padding="same", use_bias=False)]
+  block += [tf.keras.layers.BatchNormalization(momentum=0.9, epsilon=1e-5, center=True, scale=True)]
+  block += [tf.keras.layers.LeakyReLU(0.2)]
+
+  return tf.keras.Model.Sequential(block)
+
+class D_GET_LOGITS(tf.keras.layers.Layer):
+  def __init__(self, ndf, embed_dim):
+    super(D_GET_LOGITS, self).__init__()
+    self.df_dim = ndf
+    self.embed_dim = embed_dim
+    self.outlogits = tf.keras.layers.Sequential([
+        tf.keras.layers.Conv2D(1, kernel_size=4, stride=4, use_bias=True)
+        tf.keras.activations.sigmoid()])
+    
+  def call(self, x_64, x_128, x_256, sent_emb):
+    sent_emb = tf.reshape(sent_emb, shape=[-1, 1, 1, self.embed_dim])
+    sent_emb = tf.tile(sent_emb, multiples=[1, 4, 4, 1])
+    
+    h_64, h_128, h_256 =  tf.concat([x_64, sent_emb], axis=-1),  tf.concat([x_128, sent_emb], axis=-1),  tf.concat([x_256, sent_emb], axis=-1)
+    h_c_64, h_c_128, h_c_256 = block3x3_leakyRelu(h_64), block3x3_leakyRelu(h_64), block3x3_leakyRelu(h_64)
+    
+    x_64_uc_logit, x_128_uc_logit, x_256_uc_logit = self.outlogits(x_64), self.outlogits(x_128), self.outlogits(x_256)
+    x_64_c_logit, x_128_c_logit, x_256_c_logit = self.outlogits(h_c_64), self.outlogits(h_c_128), self.outlogits(h_c_256)
+
+    uncond_logits = [x_64_uc_logit, x_128_uc_logit, x_256_uc_logit]
+    cond_logits = [x_64_c_logit, x_128_c_logit, x_256_c_logit]
+
+    return uncond_logits, cond_logits
+  
+ 
+class D_NET64(tf.keras.layers.Layer):
+  def __init__(self, ndf):
+    super(D_NET64, self).__init__()
+    self.ndf = ndf
+    self.img_code_s16 = encode_image_by16times(self.ndf)
+  
+  def call(self, x):
+    x_code4 = self.img_code_s16(x_var, training=True)
+    return x_code4
+
+class D_NET128(tf.keras.layers.Layer):
+  def __init__(self, ndf):
+    super(D_NET128, self).__init__()
+    self.ndf = ndf
+    self.img_code_s16 = encode_image_by16times(ndf)
+    self.img_code_s32 = downBlock(ndf * 16)
+    self.img_code_s32_1 = block3x3_leakyRelu(ngf * 16)
+  
+  def call(self, x_var):
+    x_code8 = self.img_code_s16(x_var, training=True)
+    x_code4 = self.img_code_s32(x_code8, training=True)
+    x_code4 = self.img_code_s32_1(x_code4, training=True)
+    return x_code4
+
+class D_NET256(tf.keras.layers.Layer):
+  def __init__(self, ndf):
+    self.ndf =  ndf
+    self.img_code_s16 = encode_image_by_16times(ndf)
+    self.img_code_s32 = downBlock(ndf * 16)
+    self.img_code_s64 = downBlock(ndf * 32)
+    self.img_code_s64_1 = Block3x3_leakRelu(ndf * 16)
+    self.img_code_s64_2 = Block3x3_leakRelu(ndf * 8)
+  
+  def call(self, x_var):
+    x_code16 = self.img_code_s16(x_var, training=True)
+    x_code8 = self.img_code_s32(x_code16, training=True)
+    x_code4 = self.img_code_s64(x_code8, training=True)
+    x_code4 = self.img_code_s64_1(x_code4, training=True)
+    x_code4 = self.img_code_s64_2(x_code4, training=True)
+    return x_code4
+ 
+class Discriminator(tf.keras.Model):
+  def __init(self, ndf, embed_dim):
+    super(Discriminator, self).__init()
+    self.ndf = channels  
+    sefl.embed_dim = embed_dim
+    self.d_64 = D_NET64(self.ndf)
+    self.d_128 = D_NET128(self.ndf)
+    self.d_256 = D_NET256(self.ndf)
+    self.get_logits = D_GET_LOGITS(self.ndf, self.embed_dim)
+
+  def call(self, inputs):
+    x_64, x_128, x_256, sent_emb = inputs
+    x_64, x_128, x_256 = self.d_64(x_64), self.d_128(x_128), self.d_256(x_256)
+    uncond_logits, cond_logits = self.get_logits(x_64, x_128, x_256, sent_emb)
+    return uncond_logits, cond_logits
