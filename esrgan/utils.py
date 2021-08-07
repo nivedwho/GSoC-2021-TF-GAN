@@ -110,18 +110,18 @@ def network_interpolation(alpha=0.2,
   Returns: 
       Interpolated generator network.  
   """
-  if not phase_1_path is None or phase_2_path is None:
+  if phase_1_path is None or phase_2_path is None:
     raise ValueError(
         'Please specify paths to both phase 1 and phase 2 generators.') 
   
-  psnr_gen = tf.keras.model.load_model(phase_1_path)
+  psnr_gen = tf.keras.models.load_model(phase_1_path)
   gan_gen = tf.keras.models.load_model(phase_2_path)
 
   for var_1, var_2 in zip(gan_gen.trainable_variables, 
                           psnr_gen.trainable_variables):
     var_1.assign((1 - alpha) * var_2 + alpha * var_1)
 
-  return scale
+  return gan_gen
 
 # Utility functions for evaluation
 def get_frechet_inception_distance(real_images, generated_images, batch_size,
