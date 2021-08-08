@@ -1,5 +1,35 @@
 import tensorflow as tf
-from networks import conv1x1
+from networks import Conv
+
+def conv1x1(filters, bias=False):
+    return Conv(num_filters=filters, kernel_size=1,
+                stride=1, padding=0, use_bias=bias)
+
+def func_attention(context, query, gamma1=4.0):
+  batch_size, queryL = query.shape[0], query.shape[1] 
+  ih, iw = context.shape[1], context.shape[2]
+  sourceL = ih * iw 
+
+  context = tf.reshape(context, [batch_size, sourceL, -1]) 
+  context = tf.transpose(context, perm=[0, 2, 1])
+  attn = tf.matmul(query, context) 
+  attn = tf.reshape(attn, [batch_size * sourceL, queryL])
+  attn = tf.nn.softmax(attn)
+
+  attn = tf.reshape(attn, [batch_size, sourceL, queryL])
+  attn = tf.transpose(attn, perm=[0, 2, 1])
+  attn = tf.reshape(attn, [batch_size*queryL, sourceL])
+
+  attn = attn * gamma1
+  attn = tf.nn.softmax(attn)
+  attn = tf.reshape(attn, [batch_size, queryL, sourceL])
+
+  attn = tf.transpose(attn, perm=[0, 2, 1])
+
+  weightedContext = tf.matmul(context, attn) 
+
+  return weightedContext, tf.reshape(tf.transpose(attn, [0, 2, 1]), [batch_size, ih, iw, queryL])
+
 
 class SpatialAttention(tf.keras.layers.Layer):
   def __init__(self, idf):
@@ -58,7 +88,7 @@ class ChannelAttention(tf.keras.layers.Layer):
     word_emb = tf.squeeze(word_emb, axis=1)
 
     weighted_context = tf.reshape(weighted_context, [batch_size, ih * iw, -1])
-    attn_c = tf.matmul(weighted_context, word_emb, transpose_a=True, transpose_b=True)  # [bs, idf, seq_len]
+    attn_c = tf.matmul(weighted_context, word_emb, transpose_a=True, transpose_b=True) 
     attn_c = tf.reshape(attn_c, [batch_size * context_ch, seq_len])
     attn_c = tf.nn.softmax(attn_c)
 
@@ -67,3 +97,4 @@ class ChannelAttention(tf.keras.layers.Layer):
     weightedContext_c = tf.reshape(weightedContext_c, [batch_size, ih, iw, context_ch])
 
     return weightedContext_c, attn_c
+    

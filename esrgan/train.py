@@ -15,6 +15,10 @@ flags.DEFINE_boolean('phase_2', False,
                      'Whether Phase 2 training is done or not')
 flags.DEFINE_integer('hr_dimension', 256,
                      'Dimension of a HR image.')
+flags.DEFINE_integer('scale', 4,
+                     'Factor by which LR images are downscaled.')
+flags.DEFINE_integer('trunk_size', 11,
+                     'Number of Residual blocks for Generator.')
 flags.DEFINE_string('data_dir', '/content/datasets',
                     'Directory to save DIV2K dataset.')
 flags.DEFINE_integer('print_steps', 1000,
@@ -46,10 +50,11 @@ flags.DEFINE_string('image_dir', 'L1',
 FLAGS = flags.FLAGS
 
 def main(_):
-  hparams = train_lib.HParams(FLAGS.batch_size, FLAGS.model_dir,
-                              FLAGS.phase_1, FLAGS.phase_2,
-                              FLAGS.hr_dimension, FLAGS.data_dir,
-                              FLAGS.print_steps, FLAGS.total_steps,
+  hparams = train_lib.HParams(FLAGS.batch_size, FLAGS.scale,
+                              FLAGS.model_dir, FLAGS.phase_1, 
+                              FLAGS.phase_2, FLAGS.hr_dimension, 
+                              FLAGS.data_dir, FLAGS.print_steps, 
+                              FLAGS.trunk_size, FLAGS.total_steps,
                               FLAGS.decay_steps, FLAGS.decay_factor,
                               FLAGS.lr, FLAGS.beta_1,
                               FLAGS.beta_2, FLAGS.init_lr,

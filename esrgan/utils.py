@@ -5,48 +5,6 @@ from absl import logging
 import PIL
 import numpy as np
 
-# Utility functions for data processing
-def scale(lr_img, hr_img, hr_crop_size, upscale_factor):
-  """ Crops each HR image to hr_crops_size and LR image to hr_crop_size/scale.
-
-  Args : 
-      lr_img : Tensors representing LR images present in the DIV2K dataset.
-      hr_img : Tensors representing HR images present in the DIV2K dataset.
-      hr_crop_size : Size to which HR images are resized. 
-      scale : Upsampling factor integer used to calculate LR image size. 
-
-  Returns : 
-      Uniformly scaled tensors of LR and HR images present in the dataset. 
-  """
-  lr_crop_size = hr_crop_size // upscale_factor
-  lr_img_shape = tf.shape(lr_img)[:2]
-
-  lr_w = tf.random.uniform(
-      shape=(), maxval=lr_img_shape[1] - lr_crop_size + 1, dtype=tf.int32)
-  lr_h = tf.random.uniform(
-      shape=(), maxval=lr_img_shape[0] - lr_crop_size + 1, dtype=tf.int32)
-
-  hr_w = lr_w * upscale_factor
-  hr_h = lr_h * upscale_factor
-
-  lr_img_scaled = lr_img[lr_h:lr_h + lr_crop_size, lr_w:lr_w + lr_crop_size]
-  hr_img_scaled = hr_img[hr_h:hr_h + hr_crop_size, hr_w:hr_w + hr_crop_size]
-
-  return lr_img_scaled, hr_img_scaled
-
-def random_flip(lr_img, hr_img):
-  """ Randomly flips LR and HR images for data augmentation."""
-  rn = tf.random.uniform(shape=(), maxval=1)
-  
-  return tf.cond(rn < 0.5,
-                 lambda: (lr_img, hr_img),
-                 lambda: (tf.image.flip_left_right(lr_img),
-                          tf.image.flip_left_right(hr_img)))
-
-def random_rotate(lr_img, hr_img):
-  """ Randomly rotates LR and HR images for data augmentation."""
-  rn = tf.random.uniform(shape=(), maxval=4, dtype=tf.int32)
-  return tf.image.rot90(lr_img, rn), tf.image.rot90(hr_img, rn)
 
 def preprocess_input(image):
   """ Preprocessing of images done before calculating loss 
@@ -110,11 +68,11 @@ def network_interpolation(alpha=0.2,
   Returns: 
       Interpolated generator network.  
   """
-  if phase_1_path is None or phase_2_path is None:
+  if not phase_1_path is None or phase_2_path is None:
     raise ValueError(
         'Please specify paths to both phase 1 and phase 2 generators.') 
   
-  psnr_gen = tf.keras.models.load_model(phase_1_path)
+  psnr_gen = tf.keras.model.load_model(phase_1_path)
   gan_gen = tf.keras.models.load_model(phase_2_path)
 
   for var_1, var_2 in zip(gan_gen.trainable_variables, 
