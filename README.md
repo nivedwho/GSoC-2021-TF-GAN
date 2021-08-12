@@ -1,7 +1,7 @@
 <br />
 <p align="center">
   <a href="https://summerofcode.withgoogle.com/projects/#4563139045097472">
-    <img src="Images/readme.jpg" alt="Logo" width="150" height="100">
+    <img src="Images/readme.jpg" alt="Logo" width="300" height="200">
   </a>
   <h1 align="center">Improving TensorFlow GAN library</h1>
 </p>
