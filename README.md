@@ -1,5 +1,6 @@
 <br />
 <p align="center">
+  <h1 align="center">Improving TensorFlow GAN library</h1>
   <a href="https://summerofcode.withgoogle.com/projects/#4563139045097472">Project Link</a> |
   <a href="https://github.com/tensorflow/gan">TF-GAN Library</a>
 </p>
@@ -7,7 +8,6 @@
   <a href="https://summerofcode.withgoogle.com/projects/#4563139045097472">
     <img src="Images/readme.jpg" alt="Logo" width="300" height="200">
   </a>
-  <h1 align="center">Improving TensorFlow GAN library</h1>
 </p>
 <br>
 
