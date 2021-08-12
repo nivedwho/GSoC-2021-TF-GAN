@@ -1,6 +1,6 @@
 <br />
+<h1 align="center">Improving TensorFlow GAN library</h1>
 <p align="center">
-  <h1 align="center">Improving TensorFlow GAN library</h1>
   <a href="https://summerofcode.withgoogle.com/projects/#4563139045097472">Project Link</a> |
   <a href="https://github.com/tensorflow/gan">TF-GAN Library</a>
 </p>
@@ -24,7 +24,7 @@
 |Train and Evaluate ESRGAN model.|[Here](esrgan)| :heavy_check_mark: |
 |Write Colab notebook for training ESRGAN and<br>exploring different functionalities of TF-GAN. |[Here](esrgan/colab_notebook)|  :heavy_check_mark:|
 |Add TPU support for ESRGAN|[Here](esrgan/colab_notebook)| :heavy_check_mark: |
-|Train and Evaluate ControlGAN model.|Here| Ongoing |
-|Write Colab notebook for training ControlGAN and<br>exploring different functionalities of TF-GAN. |Here| Ongoing |
+|Train and Evaluate ControlGAN model.|Here| In progress |
+|Write Colab notebook for training ControlGAN and<br>exploring different functionalities of TF-GAN. |Here| In progress |
 |Work on new datasets.|Here| Pending |
 |Write blog posts/tutorials for ControlGAN.|Here| Pending |
