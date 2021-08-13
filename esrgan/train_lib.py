@@ -8,7 +8,7 @@ import collections
 import os
 from absl import logging
 from networks import ESRGAN_G, ESRGAN_D
-from losses import pixel_loss, PerceptualLoss, RealitivisticAverageLoss
+from losses import pixel_loss, vgg_loss, relativistic_avg_loss_g, relativistic_avg_loss_d
 from utils import preprocess_input, get_psnr, visualize_results, network_interpolation
 
 HParams = collections.namedtuple('HParams', [
@@ -43,9 +43,11 @@ def pretrain_generator(HParams, data):
   else:
     generator = ESRGAN_G(HParams)
 
+  logging.info("Starting Phase-1 training of generator using only pixel loss function.")
+
   G_optimizer = _get_optimizer()
 
-  def _train_step(image_lr, image_hr):
+  def train_step(image_lr, image_hr):
     """ Calculates the L1 Loss and gradients at each step, and updates the
         gradient to improve the PSNR values.
     Args:
@@ -72,7 +74,7 @@ def pretrain_generator(HParams, data):
     lr = tf.cast(lr, tf.float32)
     hr = tf.cast(hr, tf.float32)
 
-    psnr, gen_loss = _train_step(lr, hr)
+    psnr, gen_loss = train_step(lr, hr)
 
     # Calculate the mean loss and PSNR values obtained during training.
     metric(gen_loss)
@@ -117,21 +119,21 @@ def train_esrgan(HParams, data):
 
     discriminator = ESRGAN_D()
 
+  logging.info("Starting Phase-2 training of ESRGAN")
+
   # Generator learning rate is set as 1 x 10^-4.
   G_optimizer = _get_optimizer(lr=HParams.init_lr)
   D_optimizer = _get_optimizer()
 
   # Define RaGAN loss for generator and discriminator networks.
-  ra_gen = RealitivisticAverageLoss(discriminator, type_="G")
-  ra_disc = RealitivisticAverageLoss(discriminator, type_="D")
+  ra_gen = relativistic_avg_loss_g(discriminator)
+  ra_disc = relativistic_avg_loss_d(discriminator)
 
   # Define the Perceptual loss function and
   # pass 'imagenet' as the weight for the VGG-19 network.
-  perceptual_loss = PerceptualLoss(
+  perceptual_loss = vgg_loss(
       weight="imagenet",
-      input_shape=[HParams.hr_size, HParams.hr_size, 3],
-      loss_type='L1'
-    )
+      input_shape=[HParams.hr_size, HParams.hr_size, 3])
 
   gen_metric = tf.keras.metrics.Mean()
   disc_metric = tf.keras.metrics.Mean()
@@ -156,20 +158,16 @@ def train_esrgan(HParams, data):
 
       percep_loss = tf.reduce_mean(perceptual_loss(image_hr, fake))
       l1_loss = pixel_loss(image_hr, fake)
+      
       loss_RaG = ra_gen(image_hr, fake)
-
       disc_loss = ra_disc(image_hr, fake)
+      
       gen_loss = percep_loss + HParams.lambda_ * loss_RaG + HParams.eta * l1_loss
 
       gen_loss = gen_loss * (1.0 / HParams.batch_size)
-      disc_loss = disc_loss * (1.0 / HParams.batch_size)
-
+      disc_loss = disc_loss * (1.0 / HParams.batch_size)      
       psnr = get_psnr(image_hr, fake)
 
-      if step % HParams.num_steps//1000:
-        visualize_results(image_lr, gen, image_hr,
-                          image_dir=HParams.image_dir,
-                          step=step)
 
       disc_grad = disc_tape.gradient(disc_loss,
                                      discriminator.trainable_variables)
@@ -182,6 +180,22 @@ def train_esrgan(HParams, data):
                                       generator.trainable_variables))
 
       return gen_loss, disc_loss, psnr
+
+  def val_step(image_lr, image_hr, step):
+    """ Saves an image grid containing LR image, generated image and
+        HR image, inside the image directory.
+    Args:
+        image_lr : Low Resolution Image 
+        image_hr : High Resolution Image. 
+        step : Number of steps completed, used for naming the image 
+               file. 
+    """
+    fake=generator(image_lr)
+    visualize_results(image_lr, 
+                      fake, 
+                      image_hr,
+                      HParams.image_dir,
+                      step=step)
 
   step = 0
   # Modify learning rate at each of these steps
@@ -201,6 +215,8 @@ def train_esrgan(HParams, data):
       logging.info("Step: {}\tGenerator Loss: {}\tDiscriminator: {}\tPSNR: {}"
                    .format(step, gen_metric.result(), disc_metric.result(),
                            psnr_metric.result()))
+
+      val_step(lr, hr, step)
 
     # Modify the learning rate as mentioned in the paper.
     if step >= decay_list[0]:
@@ -222,8 +238,10 @@ def train_esrgan(HParams, data):
       phase_2_path=HParams.model_dir + '/phase_2/generator/')
 
   #Save interpolated generator
-  os.makedirs(HParams.model_dir + '/Phase_2/interpolated_generator', exist_ok=True)
-  interpolated_generator.save(HParams.model_dir + '/Phase_2/interpolated_generator')
+  os.makedirs(HParams.model_dir 
+              + '/Phase_2/interpolated_generator', exist_ok=True)
+  interpolated_generator.save(HParams.model_dir 
+                              + '/Phase_2/interpolated_generator')
   logging.info("Saved interpolated generator network succesfully!")
 
 def _get_optimizer(lr=0.0002):
