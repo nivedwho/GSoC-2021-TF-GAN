@@ -117,7 +117,7 @@ def train_esrgan(HParams, data):
       raise FileNotFoundError('Pre-trained Generator model not found!')
 
 
-    discriminator = ESRGAN_D()
+    discriminator = ESRGAN_D(HParams)
 
   logging.info("Starting Phase-2 training of ESRGAN")
 
