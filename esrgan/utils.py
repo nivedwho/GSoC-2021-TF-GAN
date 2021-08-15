@@ -1,3 +1,18 @@
+# coding=utf-8
+# Copyright 2021 The TensorFlow GAN Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import os
 import tensorflow as tf
 import tensorflow_gan as tfgan
@@ -68,11 +83,11 @@ def network_interpolation(alpha=0.2,
   Returns: 
       Interpolated generator network.  
   """
-  if not phase_1_path is None or phase_2_path is None:
+  if phase_1_path is None or phase_2_path is None:
     raise ValueError(
         'Please specify paths to both phase 1 and phase 2 generators.') 
   
-  psnr_gen = tf.keras.model.load_model(phase_1_path)
+  psnr_gen = tf.keras.models.load_model(phase_1_path)
   gan_gen = tf.keras.models.load_model(phase_2_path)
 
   for var_1, var_2 in zip(gan_gen.trainable_variables, 

@@ -1,12 +1,29 @@
+# coding=utf-8
+# Copyright 2021 The TensorFlow GAN Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import tensorflow as tf
 from absl import logging
 import utils
 import collections
 
 HParams = collections.namedtuple('HParams', [
-    'batch_size', 'num_steps',
-    'num_inception_images', 'image_dir',
-    'eval_real_images'])
+    'batch_size', 'hr_dimension',
+    'scale',
+    'model_dir', 'data_dir',
+    'num_steps', 'num_inception_images', 
+    'image_dir', 'eval_real_images'])
 
 def evaluate(hparams, generator, data):
   """ Runs an evaluation loop and calculates the mean FID,
@@ -53,10 +70,8 @@ def evaluate(hparams, generator, data):
     inc_metric(inc_score)
 
     # Compute PSNR values.
-    psnr = utils.get_psnr(hr,
-                          gen,
-                          hparams.batch_size)
+    psnr = utils.get_psnr(hr, gen)
     psnr_metric(psnr)
 
-  logging.info('FID Score :{}\tInception Score :{}\tPSNR value{}'.format(
+  logging.info('FID Score :{}\tInception Score :{}\tPSNR value :{}'.format(
       fid_metric.result(), inc_metric.result(), psnr_metric.result()))

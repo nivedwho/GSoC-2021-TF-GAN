@@ -1,3 +1,17 @@
+# coding=utf-8
+# Copyright 2021 The TensorFlow GAN Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 """Train the ESRGAN model
 See https://arxiv.org/abs/1809.00219 for details about the model.
@@ -133,7 +147,7 @@ def train_esrgan(HParams, data):
   # pass 'imagenet' as the weight for the VGG-19 network.
   perceptual_loss = vgg_loss(
       weight="imagenet",
-      input_shape=[HParams.hr_size, HParams.hr_size, 3])
+      input_shape=[HParams.hr_dimension, HParams.hr_dimension, 3])
 
   gen_metric = tf.keras.metrics.Mean()
   disc_metric = tf.keras.metrics.Mean()
@@ -200,7 +214,8 @@ def train_esrgan(HParams, data):
   step = 0
   # Modify learning rate at each of these steps
   decay_list = [50000, 100000, 200000, 300000]
-  for lr, hr in data.take(HParams.steps):
+
+  for lr, hr in data.take(HParams.total_steps):
     step += 1
     lr = tf.cast(lr, tf.float32)
     hr = tf.cast(hr, tf.float32)
@@ -221,10 +236,10 @@ def train_esrgan(HParams, data):
     # Modify the learning rate as mentioned in the paper.
     if step >= decay_list[0]:
       G_optimizer.learning_rate.assign(
-          G_optimizer.learning_rate * 0.5)
+          G_optimizer.learning_rate * HParams.decay_factor)
 
       D_optimizer.learning_rate.assign(
-          D_optimizer.learning_rate * 0.5)
+          D_optimizer.learning_rate * HParams.decay_factor)
 
       decay_list.pop(0)
 
@@ -234,14 +249,15 @@ def train_esrgan(HParams, data):
   logging.info("Saved trained ESRGAN generator succesfully!")
 
   interpolated_generator = network_interpolation(
-      phase_1_path=HParams.model_dir + '/phase_1/generator/',
-      phase_2_path=HParams.model_dir + '/phase_2/generator/')
+      phase_1_path=HParams.model_dir + '/Phase_1/generator',
+      phase_2_path=HParams.model_dir + '/Phase_2/generator')
 
   #Save interpolated generator
   os.makedirs(HParams.model_dir 
               + '/Phase_2/interpolated_generator', exist_ok=True)
   interpolated_generator.save(HParams.model_dir 
                               + '/Phase_2/interpolated_generator')
+
   logging.info("Saved interpolated generator network succesfully!")
 
 def _get_optimizer(lr=0.0002):
