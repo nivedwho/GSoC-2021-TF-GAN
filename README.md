@@ -41,4 +41,5 @@ I would like to thank [Google Cloud Platform](https://cloud.google.com/) and [TP
 
 ### Reference
 [1] [ESRGAN: Enhanced Super-Resolution Generative Adversarial Networks](https://arxiv.org/abs/1809.00219)
+
 [2] [Controllable Text-to-Image Generation](https://arxiv.org/abs/1909.07083v2)
