@@ -31,6 +31,7 @@
 ## Work Done
 ### ESRGAN<sup>1</sup>- Enhanced Super-Resolution Adversarial Network
 Image Super-Resolution is the process of enhancing the resolution of low resolution(LR) image.  Such a task has numerous application in today's world. The [Super-Resolution GAN](https://arxiv.org/abs/1609.04802) model was a major breathrough in this field and was capable of generating photorealistic images, however the model also generated artifacts that reduced the overall visual quality. To overcome this, the ESRGAN<sup>1</sup> model was proposed with three major changes made to the SRGAN model : Using Residual-in-Residual Dense Block (RRDB) without batch normalization as basic network building unit; Using an improved method to calculate adversarial loss used in [RelativisticGAN](https://arxiv.org/abs/1807.00734v3) ; Improving perceptual loss function by using features before activation. 
+
 Through this project, the ESRGAN model was added as an example to TF-GAN library. Additionally notebook files for end-to-end training of the model on GPU as well as TPU are also implemented which can be directly run on Google Colaboratory.  The model was trained on the DIV2K dataset and was able to achieve great results. Evaluation metrics such as FID and Inception Scores, for evaluating the model was also calculated using TF-GAN. The Relativistic Average GAN loss used in the model was also added as a loss function to TF-GAN. 
 
 ### ControlGAN<sup>2</sup> - Controllable Text-to-Image Generation
