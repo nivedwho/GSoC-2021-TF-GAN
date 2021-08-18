@@ -23,7 +23,7 @@ from absl.testing import absltest
 import os
 
 import tensorflow as tf
-from tfgan.examples.esrgan import losses 
+import losses 
 
 class LossesTest(tf.test.TestCase, absltest.TestCase):
   def setUp(self):

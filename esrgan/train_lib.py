@@ -21,8 +21,8 @@ import tensorflow as tf
 import collections
 import os
 from absl import logging
-from networks import ESRGAN_G, ESRGAN_D
-from losses import pixel_loss, vgg_loss, relativistic_avg_loss_g, relativistic_avg_loss_d
+from networks import generator_network, discriminator_network
+from losses import pixel_loss, vgg_loss, ragan_generator_loss, ragan_discriminator_loss
 from utils import preprocess_input, get_psnr, visualize_results, network_interpolation
 
 HParams = collections.namedtuple('HParams', [
@@ -55,7 +55,7 @@ def pretrain_generator(HParams, data):
     generator = tf.keras.load_model(HParams.model_dir + '/Phase_1/generator/')
   # If pre-trained model is not available, start training from the beginning
   else:
-    generator = ESRGAN_G(HParams)
+    generator = generator_network(HParams)
 
   logging.info("Starting Phase-1 training of generator using only pixel loss function.")
 
@@ -131,7 +131,7 @@ def train_esrgan(HParams, data):
       raise FileNotFoundError('Pre-trained Generator model not found!')
 
 
-    discriminator = ESRGAN_D(HParams)
+    discriminator = discriminator_network(HParams)
 
   logging.info("Starting Phase-2 training of ESRGAN")
 
@@ -140,8 +140,8 @@ def train_esrgan(HParams, data):
   D_optimizer = _get_optimizer()
 
   # Define RaGAN loss for generator and discriminator networks.
-  ra_gen = relativistic_avg_loss_g(discriminator)
-  ra_disc = relativistic_avg_loss_d(discriminator)
+  #ra_gen = relativistic_avg_loss_g(discriminator)
+  #ra_disc = relativistic_avg_loss_d(discriminator)
 
   # Define the Perceptual loss function and
   # pass 'imagenet' as the weight for the VGG-19 network.
@@ -173,8 +173,12 @@ def train_esrgan(HParams, data):
       percep_loss = tf.reduce_mean(perceptual_loss(image_hr, fake))
       l1_loss = pixel_loss(image_hr, fake)
       
-      loss_RaG = ra_gen(image_hr, fake)
-      disc_loss = ra_disc(image_hr, fake)
+      loss_RaG = ragan_generator_loss(discriminator(image_hr), 
+                                      discriminator(fake))
+      disc_loss = ragan_discriminator_loss(discriminator(image_hr), 
+                                           discriminator(fake))
+      #loss_RaG = ra_gen(image_hr, fake)
+      #disc_loss = ra_disc(image_hr, fake)
       
       gen_loss = percep_loss + HParams.lambda_ * loss_RaG + HParams.eta * l1_loss
 
@@ -262,8 +266,10 @@ def train_esrgan(HParams, data):
 
 def _get_optimizer(lr=0.0002):
   """Returns the Adam optimizer with the specified learning rate."""
-  return tf.optimizers.Adam(
-      learning_rate=lr,
-      beta_1=0.9,
-      beta_2=0.99
-  )
+  optimizer =  tf.optimizers.Adam(
+                        learning_rate=lr,
+                        beta_1=0.9,
+                        beta_2=0.99
+                    )
+  return optimizer
+  

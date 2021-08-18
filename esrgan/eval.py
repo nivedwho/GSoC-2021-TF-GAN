@@ -15,13 +15,13 @@
 
 from absl import flags, logging, app
 import tensorflow as tf
-from tensorflow_gan.examples.esrgan import train_lib
-from tensorflow_gan.examples.esrgan import data_provider
+import eval_lib
+import data_provider
 
 
-flags.DEFINE_integer('batch_size', 32,
+flags.DEFINE_integer('batch_size', 2,
                      'The number of images in each batch.')
-flags.DEFINE_integer('hr_dimension', 256,
+flags.DEFINE_integer('hr_dimension', 128,
                      'Dimension of a HR image.')
 flags.DEFINE_integer('scale', 4,
                      'Factor by which LR images are downscaled.')                     
@@ -29,9 +29,9 @@ flags.DEFINE_string('model_dir', '/content/',
                     'Directory where the trained models are stored.')
 flags.DEFINE_string('data_dir', '/content/datasets',
                     'Directory where dataset is stored.')
-flags.DEFINE_integer('num_steps', 10,
+flags.DEFINE_integer('num_steps', 2,
                      'The number of steps for evaluation.')
-flags.DEFINE_integer('num_inception_images', 32,
+flags.DEFINE_integer('num_inception_images', 2,
                      'The number of images passed for evaluation at each step.')
 flags.DEFINE_string('image_dir', '/content/results',
                     'Directory to save generated images during evaluation.')

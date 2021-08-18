@@ -63,12 +63,13 @@ def visualize_results(image_lr,
   image_grid = tfgan.eval.python_image_grid(stack, grid_shape=(1, 3))
   result = PIL.Image.fromarray(image_grid.astype(np.uint8))
   
-  if train:
-    os.makedirs(image_dir + 'training_results', exist_ok=True)
-    result.save(image_dir + 'training_results/' + 'step_{}.png'.format(step))
-  else: 
-    os.makedirs(image_dir + 'validation_results', exist_ok=True)
-    result.save(image_dir + 'validation_results/' + 'step_{}.png'.format(step))
+  if image_dir: 
+    if train:
+      os.makedirs(image_dir + 'training_results', exist_ok=True)
+      result.save(image_dir + 'training_results/' + 'step_{}.png'.format(step))
+    else: 
+      os.makedirs(image_dir + 'validation_results', exist_ok=True)
+      result.save(image_dir + 'validation_results/' + 'step_{}.png'.format(step))
 
 
 def network_interpolation(alpha=0.2,

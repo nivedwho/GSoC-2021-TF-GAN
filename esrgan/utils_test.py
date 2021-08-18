@@ -24,7 +24,7 @@ import os
 import collections
 
 import tensorflow as tf
-from tensorflow_gan.examples.esrgan import utils, networks
+import utils, networks
 
 
 Params = collections.namedtuple('HParams', ['hr_dimension', 
@@ -37,9 +37,9 @@ class UtilsTest(tf.test.TestCase):
     super(UtilsTest, self).setUp()
     self.HParams = Params(256, 4, 11, '/content/')
     
-    self.generator1 = networks.generator(self.HParams)
+    self.generator1 = networks.generator_network(self.HParams)
     self.generator1.save(self.HParams.path+'1/')
-    self.generator2 = networks.generator(self.HParams)
+    self.generator2 = networks.generator_network(self.HParams)
     self.generator1.save(self.HParams.path+'2/')
 
     self.hr_data = tf.random.normal([2,256,256,3])

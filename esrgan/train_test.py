@@ -24,7 +24,7 @@ import os
 import collections
 
 import tensorflow as tf
-from tensorflow_gan.examples.esrgan import train_lib
+import train_lib
 
 mock = tf.compat.v1.test.mock
 HParams = collections.namedtuple('HParams', [
@@ -46,7 +46,6 @@ class TrainTest(tf.test.TestCase):
                           '/content/', 1, 11, 1, 1, 
                           0.5, 0.0001, 0.5, 0.001, 0.00005, 
                           'L1', 0.001, 0.5, '/content/')
-    
     d = tf.data.Dataset.from_tensor_slices(tf.random.normal([32, 256, 256, 3]))
     def lr(hr):
       lr = tf.image.resize(hr, [64, 64], method='bicubic')
@@ -55,13 +54,6 @@ class TrainTest(tf.test.TestCase):
     d = d.map(lr)
     d = d.batch(2)
     self.mock_dataset = d 
-
-  @mock.patch.object(tf.optimizers, 'Adam', autospec=True)
-  def test_get_optimizer(self, mock_adam_optimizer):
-    lr = 0.001
-    train_lib._get_optimizer(lr)
-    mock_adam_optimizer.assert_has_calls([
-        mock.call(beta_1=mock.ANY, beta_2=mock.ANY, learning_rate=0.001)])
   
   def test_pretrain_generator(self):
     """ Executes all the processes inside the phase-1 training step, once.

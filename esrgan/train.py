@@ -14,10 +14,10 @@
 # limitations under the License.
 
 from absl import flags, logging, app
-from tensorflow_gan.examples.esrgan import train_lib
-from tensorflow_gan.examples.esrgan import data_provider
+import train_lib
+import data_provider
 
-flags.DEFINE_integer('batch_size', 32,
+flags.DEFINE_integer('batch_size', 4,
                      'The number of images in each batch.')
 flags.DEFINE_string('model_dir', '/content/',
                     'Directory to save and load trained models')
@@ -25,7 +25,7 @@ flags.DEFINE_boolean('phase_1', False,
                      'Whether Phase 1 training is done or not')
 flags.DEFINE_boolean('phase_2', False,
                      'Whether Phase 2 training is done or not')
-flags.DEFINE_integer('hr_dimension', 256,
+flags.DEFINE_integer('hr_dimension', 128,
                      'Dimension of a HR image.')
 flags.DEFINE_integer('scale', 4,
                      'Factor by which LR images are downscaled.')
@@ -35,7 +35,7 @@ flags.DEFINE_string('data_dir', '/content/datasets',
                     'Directory to save DIV2K dataset.')
 flags.DEFINE_integer('print_steps', 1000,
                      'Steps at which values are displayed during training.')
-flags.DEFINE_integer('total_steps', 300000,
+flags.DEFINE_integer('total_steps', 1,
                      'The maximum number of steps for training.')
 flags.DEFINE_integer('decay_steps', 50000,
                      'Step at which learning rate is modified.')

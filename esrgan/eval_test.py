@@ -24,7 +24,7 @@ import os
 import collections
 
 import tensorflow as tf
-from tensorflow_gan.examples.esrgan import eval_lib, networks
+import eval_lib, networks
 
 HParams = collections.namedtuple('HParams', [
   'num_steps', 'image_dir', 'batch_size', 'num_inception_images',
@@ -45,7 +45,7 @@ class EvalTest(tf.test.TestCase):
     d = d.map(lr)
     d = d.batch(2)
     self.mock_dataset = d 
-    self.generator = networks.generator(self.HParams)
+    self.generator = networks.generator_network(self.HParams)
 
   def test_eval(self):
     self.assertIsNone(eval_lib.evaluate(self.HParams, 

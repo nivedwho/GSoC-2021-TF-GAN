@@ -14,9 +14,7 @@
 # limitations under the License.
 
 import os 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR) 
 from keras.models import Model
 from keras.layers import Input, Add, Concatenate
 from keras.layers import BatchNormalization, LeakyReLU, Conv2D, Dense, Conv2DTranspose
@@ -66,7 +64,7 @@ def dense_block(input):
 
   return h
 
-def RRDB(input):
+def rrdb_block(input):
   h = dense_block(input)
   h = dense_block(h)
   h = dense_block(h)
@@ -81,9 +79,9 @@ def upsample(x, filters, use_bias=True):
   x = LeakyReLU(alpha=0.2)(x)
   return x
 
-def ESRGAN_G(HParams,
-             num_filters=32,
-             out_channels=3):
+def generator_network(HParams,
+              num_filters=32,
+              out_channels=3):
   """
   The Generator network for ESRGAN consisting of Residual in Residual Block
   as the basic building unit.
@@ -109,7 +107,7 @@ def ESRGAN_G(HParams,
   ref = x
 
   for _ in range(HParams.trunk_size):
-    x = RRDB(x)
+    x = rrdb_block(x)
 
   x = Conv2D(num_filters, kernel_size=[3, 3], strides=[1, 1],
              padding='same', use_bias=True)(x)
@@ -128,9 +126,9 @@ def ESRGAN_G(HParams,
   return model
 
 
-def ESRGAN_D(HParams,
-             num_filters=64, 
-             training=True):
+def discriminator_network(HParams,
+                  num_filters=64, 
+                  training=True):
   """
   The discriminator network for ESRGAN.
 

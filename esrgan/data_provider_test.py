@@ -22,7 +22,7 @@ from __future__ import print_function
 from absl.testing import absltest
 import numpy as np
 import tensorflow as tf
-from tfgan.examples.esrgan import data_provider
+import data_provider
 import collections
 
 Params = collections.namedtuple('HParams', ['hr_dimension', 
