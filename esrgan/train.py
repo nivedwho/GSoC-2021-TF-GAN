@@ -1,23 +1,8 @@
-# coding=utf-8
-# Copyright 2021 The TensorFlow GAN Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from absl import flags, logging, app
 import train_lib
 import data_provider
 
-flags.DEFINE_integer('batch_size', 4,
+flags.DEFINE_integer('batch_size', 16,
                      'The number of images in each batch.')
 flags.DEFINE_string('model_dir', '/content/',
                     'Directory to save and load trained models')
@@ -35,7 +20,7 @@ flags.DEFINE_string('data_dir', '/content/datasets',
                     'Directory to save DIV2K dataset.')
 flags.DEFINE_integer('print_steps', 1000,
                      'Steps at which values are displayed during training.')
-flags.DEFINE_integer('total_steps', 1,
+flags.DEFINE_integer('total_steps', 100000,
                      'The maximum number of steps for training.')
 flags.DEFINE_integer('decay_steps', 50000,
                      'Step at which learning rate is modified.')
