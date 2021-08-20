@@ -1,7 +1,7 @@
 <h1 align="center">Google Summer of Code 2021 - TensorFlow</h1>
 <p align="center">
   <a href="https://summerofcode.withgoogle.com/projects/#4563139045097472">
-    <img src="Images/readme.jpg" alt="Logo" width="300" height="200">
+    <img src="Images/readme.jpg" alt="Logo" width="246.6" height="100">
   </a>
 </p>
 <h2 align="center">Improving TensorFlow GAN library </h2>
