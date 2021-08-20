@@ -21,7 +21,7 @@
 |<br />Train and Evaluate ESRGAN<sup>1</sup><br /><img width=1/>|[Link](esrgan)|:heavy_check_mark:|[#47](https://github.com/tensorflow/gan/pull/47)|
 |<br />Write Colab notebook for training and evaluating <br>ESRGAN using TF-GAN|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nivedwho/GSoC-TF-GAN/blob/main/esrgan/colab_notebooks/ESRGAN_GPU.ipynb)|:heavy_check_mark:|[#48](https://github.com/tensorflow/gan/pull/48)|
 |<br />Add TPU support for ESRGAN<br /><img width=1/>|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nivedwho/GSoC-TF-GAN/blob/main/esrgan/colab_notebooks/ESRGAN_TPU.ipynb)|:heavy_check_mark:|[#48](https://github.com/tensorflow/gan/pull/48)|
-|<br />Add RaGAN loss function to TF-GAN<br /><img width=1/>|[Link](esrgan/colab_notebook)|:heavy_check_mark:|[#46](https://github.com/tensorflow/gan/pull/46)|
+|<br />Add RaGAN loss function to TF-GAN<br /><img width=1/>|[Link](https://github.com/tensorflow/gan/pull/46/commits/8d9bab792d9573f45bc53b3fe84bee26cce95b98)|:heavy_check_mark:|[#46](https://github.com/tensorflow/gan/pull/46)|
 |<br />Train and Evaluate ControlGAN<sup>2</sup> model<br /><img width=1/>|[Link](ControlGAN/)| In progress |
 |<br />Write Colab notebook for training and evaluating <br>ControlGAN using TF-GAN|Link| In progress |
 
