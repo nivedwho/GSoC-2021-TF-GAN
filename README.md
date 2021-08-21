@@ -13,7 +13,7 @@
 </p>
  
 ## Project Abstract
-[TensorFlow GAN](https://github.com/tensorflow/gan) is a lightweight library that provides a convenient way to train and evaluate GAN models. GANs have come a long way in the past few years and in through this project more recent GAN models with better performance and more applications such as Image Super Resolution and Text-to-Image translation will be added as examples to the library.  Additionally multiple Colab notebooks will also be added to demonstrate the performances of each of these example models and also to explore various functionalities of the library. 
+[TensorFlow GAN](https://github.com/tensorflow/gan) is a lightweight library that provides a convenient way to train and evaluate GAN models. GANs have come a long way in the past few years and through this project more recent GAN models with better performance and more applications such as Image Super Resolution and Text-to-Image translation will be added as examples to the library.  Additionally multiple Colab notebooks will also be added to demonstrate the performances of each of these example models and also to explore various functionalities of the library. 
 
 ## Tasks
 |Tasks|Code|Status|PR|
@@ -26,7 +26,9 @@
 |<br />Write Colab notebook for training and evaluating <br>ControlGAN using TF-GAN|Link| In progress |
 
 
-## Work Done
+## Project Scope
+The main aim of this project is to update the TF-GAN library by adding more recent variants of GANs that has more applications. For this we selected ESRGAN for the task of Image-Super-Resolution and ControlGAN for Text-to-Image translation. Adding notebook tutorials for these examples can also help users to gain insights into the implementation, training and evaluation process for these models and can help in exploring different useful features of the TF-GAN library.  This can also enable users to train the models directly on Google Colaboratory by making use of either its GPU or TPU.  
+
 ### ESRGAN<sup>1</sup> - Enhanced Super-Resolution Adversarial Network
 Image Super-Resolution is the process of reconstructing high resolution (HR) image from a given low resolution (LR) image. Such a task has numerous application in today's world. The [Super-Resolution GAN](https://arxiv.org/abs/1609.04802) model was a major breathrough in this field and was capable of generating photorealistic images, however the model also generated artifacts that reduced the overall visual quality. To overcome this, the ESRGAN<sup>1</sup> model was proposed with three major changes made to the SRGAN model :
 
