@@ -28,7 +28,7 @@
 
 ## Project Scope
 The main aim of this project is to update the TF-GAN library by adding more recent variants of GANs that has more applications. For this we selected ESRGAN for the task of Image-Super-Resolution and ControlGAN for Text-to-Image translation. Along with these examples we also add more functionalities to TF-GAN library that can help in the process of training, evaluation or inference of GAN models. 
-This project also aims to add notebook tutorials for these examples which can also help users to gain insights into the implementation, training and evaluation process for these models and can help in exploring different useful features of the TF-GAN library.  This also allows users to train the models directly on Google Colaboratory by making use of either its GPU or TPU.  
+This project also aims to add notebook tutorials for these examples which can also help users to gain insights into the implementation, training and evaluation process for these models and can help in exploring different useful features of the TF-GAN library.  This also allows users to train the models directly on Google Colaboratory.
 
 ### ESRGAN<sup>1</sup> - Enhanced Super-Resolution Adversarial Network
 Image Super-Resolution is the process of reconstructing high resolution (HR) image from a given low resolution (LR) image. Such a task has numerous application in today's world. The [Super-Resolution GAN](https://arxiv.org/abs/1609.04802) model was a major breathrough in this field and was capable of generating photorealistic images, however the model also generated artifacts that reduced the overall visual quality. To overcome this, the ESRGAN<sup>1</sup> model was proposed with three major changes made to the SRGAN model :
@@ -42,7 +42,7 @@ Through this project, the ESRGAN model was added as an example to TF-GAN library
 ### ControlGAN<sup>2</sup> - Controllable Text-to-Image Generation
 The Controllable text-to-image Generative Adversarial Network is used for the task of generating high-quality images based on textual descriptions and can make changes to certain visual attributes of the image based on the same. This can potentially have numerous applications in areas such as art generation, UI designing and image editing. The generator of ControlGAN makes use of two attention modules - Spatial Attention Module and Channel-Wise Attention module.  The discriminator used is also different from other GAN networks, and checks the correlation between subregions of the generated image and the descriptions. Perceptual loss function is also used for improving the quality of the generated images. 
 
-This is a work in progress and currently the model is being trained on the CUB-Birds dataset. 
+This is a work in progress and although the basic implementation is completed, the model is currently being trained on the CUB-Birds dataset. Once the training process is done it will also be added to the TF-GAN library. 
 
 ## What's Next ? 
 Currently almost all the text-to-image generation models are being trained on datasets such as CUB and COCO for benchmarking their performance and as far as we know only results for such models are publicly available. Once the implementation of ControlGAN is completed, we plan to extend it to serve some real-world applications in areas such as art generation or image editing and for doing so we are looking for other relevant datasets to train the model. At the same time we are also looking for ways to improve its performance. 
