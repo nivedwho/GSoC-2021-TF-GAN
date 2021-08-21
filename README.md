@@ -11,23 +11,24 @@
   <a href="https://github.com/tensorflow/gan">TF-GAN Library</a>
   </strong>
 </p>
- 
+
 ## Project Abstract
 [TensorFlow GAN](https://github.com/tensorflow/gan) is a lightweight library that provides a convenient way to train and evaluate GAN models. GANs have come a long way in the past few years and through this project more recent GAN models with better performance and more applications such as Image Super Resolution and Text-to-Image translation will be added as examples to the library.  Additionally multiple Colab notebooks will also be added to demonstrate the performances of each of these example models and also to explore various functionalities of the library. 
 
 ## Tasks
-|Tasks|Code|Status|PR|
+|Tasks|Code|Status|TF-GAN PR|
 |:-:|:-:|:-:|:-:|
-|<br />Train and Evaluate ESRGAN<sup>1</sup><br /><img width=1/>|[Link](esrgan)|:heavy_check_mark:|[#47](https://github.com/tensorflow/gan/pull/47)|
-|<br />Write Colab notebook for training and evaluating <br>ESRGAN using TF-GAN|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nivedwho/GSoC-TF-GAN/blob/main/esrgan/colab_notebooks/ESRGAN_GPU.ipynb)|:heavy_check_mark:|[#48](https://github.com/tensorflow/gan/pull/48)|
-|<br />Add TPU support for ESRGAN<br /><img width=1/>|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nivedwho/GSoC-TF-GAN/blob/main/esrgan/colab_notebooks/ESRGAN_TPU.ipynb)|:heavy_check_mark:|[#48](https://github.com/tensorflow/gan/pull/48)|
-|<br />Add RaGAN loss function to TF-GAN<br /><img width=1/>|[Link](https://github.com/tensorflow/gan/pull/46/commits/8d9bab792d9573f45bc53b3fe84bee26cce95b98)|:heavy_check_mark:|[#46](https://github.com/tensorflow/gan/pull/46)|
+|<br />Train and Evaluate ESRGAN<sup>1</sup><br /><img width=1/>|[Link](esrgan)|In Review|[#47](https://github.com/tensorflow/gan/pull/47)|
+|<br />Write Colab notebook for training and evaluating <br>ESRGAN using TF-GAN|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nivedwho/GSoC-TF-GAN/blob/main/esrgan/colab_notebooks/ESRGAN_GPU.ipynb)|In Review|[#48](https://github.com/tensorflow/gan/pull/48)|
+|<br />Add TPU support for ESRGAN<br /><img width=1/>|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nivedwho/GSoC-TF-GAN/blob/main/esrgan/colab_notebooks/ESRGAN_TPU.ipynb)|In Review|[#48](https://github.com/tensorflow/gan/pull/48)|
+|<br />Add RaGAN loss function to TF-GAN<br /><img width=1/>|[Link](https://github.com/tensorflow/gan/pull/46/commits/8d9bab792d9573f45bc53b3fe84bee26cce95b98)|In Review|[#46](https://github.com/tensorflow/gan/pull/46)|
 |<br />Train and Evaluate ControlGAN<sup>2</sup> model<br /><img width=1/>|[Link](ControlGAN/)| In progress |
 |<br />Write Colab notebook for training and evaluating <br>ControlGAN using TF-GAN|Link| In progress |
 
 
 ## Project Scope
-The main aim of this project is to update the TF-GAN library by adding more recent variants of GANs that has more applications. For this we selected ESRGAN for the task of Image-Super-Resolution and ControlGAN for Text-to-Image translation. Adding notebook tutorials for these examples can also help users to gain insights into the implementation, training and evaluation process for these models and can help in exploring different useful features of the TF-GAN library.  This can also enable users to train the models directly on Google Colaboratory by making use of either its GPU or TPU.  
+The main aim of this project is to update the TF-GAN library by adding more recent variants of GANs that has more applications. For this we selected ESRGAN for the task of Image-Super-Resolution and ControlGAN for Text-to-Image translation. Along with these examples we also add more functionalities to TF-GAN library that can help in the process of training, evaluation or inference of GAN models. 
+This project also aims to add notebook tutorials for these examples which can also help users to gain insights into the implementation, training and evaluation process for these models and can help in exploring different useful features of the TF-GAN library.  This also allows users to train the models directly on Google Colaboratory by making use of either its GPU or TPU.  
 
 ### ESRGAN<sup>1</sup> - Enhanced Super-Resolution Adversarial Network
 Image Super-Resolution is the process of reconstructing high resolution (HR) image from a given low resolution (LR) image. Such a task has numerous application in today's world. The [Super-Resolution GAN](https://arxiv.org/abs/1609.04802) model was a major breathrough in this field and was capable of generating photorealistic images, however the model also generated artifacts that reduced the overall visual quality. To overcome this, the ESRGAN<sup>1</sup> model was proposed with three major changes made to the SRGAN model :
