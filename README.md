@@ -13,7 +13,7 @@
 </p>
 
 ## Project Abstract
-[TensorFlow GAN](https://github.com/tensorflow/gan) is a lightweight library that provides a convenient way to train and evaluate GAN models.The main aim of this project is to update the TF-GAN library by adding more recent variants of GANs that has more applications. For this we selected ESRGAN for the task of Image-Super-Resolution and ControlGAN for Text-to-Image translation. Along with these examples we also add more functionalities to TF-GAN library that can help in the process of training, evaluation or inference of GAN models. 
+[TensorFlow GAN](https://github.com/tensorflow/gan) is a lightweight library that provides a convenient way to train and evaluate GAN models.The main aim of this project is to update the TF-GAN library by adding more recent variants of GANs that has more applications. For this we selected ESRGAN<sup>1</sup> for the task of Image-Super-Resolution and ControlGAN<sup>2</sup> for Text-to-Image translation. Along with these examples we also add more functionalities to TF-GAN library that can help in the process of training, evaluation or inference of GAN models. 
 This project also aims to add notebook tutorials for these examples which can also help users to gain insights into the implementation, training and evaluation process for these models and can help in exploring different useful features of the TF-GAN library.  This also allows users to train the models directly on Google Colaboratory.
 
 ## Project Scope
