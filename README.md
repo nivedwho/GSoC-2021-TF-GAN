@@ -35,8 +35,8 @@ This is a work in progress and although the basic implementation is completed, t
 |Tasks|Code|Status|TF-GAN PR|
 |:-:|:-:|:-:|:-:|
 |<br />Train and Evaluate ESRGAN<sup>1</sup><br /><img width=1/>|[Link](esrgan)|In Review|[#47](https://github.com/tensorflow/gan/pull/47)|
-|<br />Write Colab notebook for training and evaluating <br>ESRGAN using TF-GAN|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nivedwho/GSoC-TF-GAN/blob/main/esrgan/colab_notebooks/ESRGAN_GPU.ipynb)|In Review|[#48](https://github.com/tensorflow/gan/pull/48)|
-|<br />Add TPU support for ESRGAN<br /><img width=1/>|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nivedwho/GSoC-TF-GAN/blob/main/esrgan/colab_notebooks/ESRGAN_TPU.ipynb)|In Review|[#48](https://github.com/tensorflow/gan/pull/48)|
+|<br />Write Colab notebook for training and evaluating <br>ESRGAN using TF-GAN|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tensorflow/gan/blob/master/tensorflow_gan/examples/esrgan/colab_notebooks/ESRGAN_GPU.ipynb)|Merged|[#48](https://github.com/tensorflow/gan/pull/48)|
+|<br />Add TPU support for ESRGAN<br /><img width=1/>|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tensorflow/gan/blob/master/tensorflow_gan/examples/esrgan/colab_notebooks/ESRGAN_TPU.ipynb)|Merged|[#48](https://github.com/tensorflow/gan/pull/48)|
 |<br />Add RaGAN loss function to TF-GAN<br /><img width=1/>|[Link](https://github.com/tensorflow/gan/pull/46/commits/8d9bab792d9573f45bc53b3fe84bee26cce95b98)|In Review|[#46](https://github.com/tensorflow/gan/pull/46)|
 |<br />Train and Evaluate ControlGAN<sup>2</sup> model<br /><img width=1/>|[Link](ControlGAN/)| In progress |
 |<br />Write Colab notebook for training and evaluating <br>ControlGAN using TF-GAN|Link| In progress |
