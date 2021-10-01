@@ -34,9 +34,9 @@ This is a work in progress and although the basic implementation is completed, t
 ## Tasks
 |Tasks|Code|Status|TF-GAN PR|
 |:-:|:-:|:-:|:-:|
-|<br />Train and Evaluate ESRGAN<sup>1</sup><br /><img width=1/>|[Link](https://github.com/tensorflow/gan/tree/master/tensorflow_gan/examples/esrgan)|Merged|[#47](https://github.com/tensorflow/gan/pull/47)|
-|<br />Write Colab notebook for training and evaluating <br>ESRGAN using TF-GAN|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tensorflow/gan/blob/master/tensorflow_gan/examples/esrgan/colab_notebooks/ESRGAN_GPU.ipynb)|Merged|[#48](https://github.com/tensorflow/gan/pull/48)|
-|<br />Add TPU support for ESRGAN<br /><img width=1/>|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tensorflow/gan/blob/master/tensorflow_gan/examples/esrgan/colab_notebooks/ESRGAN_TPU.ipynb)|Merged|[#48](https://github.com/tensorflow/gan/pull/48)|
+|<br />Train and Evaluate ESRGAN<sup>1</sup><br /><img width=1/>|[Link](https://github.com/tensorflow/gan/tree/master/tensorflow_gan/examples/esrgan)|Merged|[#47](https://github.com/tensorflow/gan/pull/47), [#51](https://github.com/tensorflow/gan/pull/51)|
+|<br />Write Colab notebook for training and evaluating <br>ESRGAN using TF-GAN|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tensorflow/gan/blob/master/tensorflow_gan/examples/esrgan/colab_notebooks/ESRGAN_GPU.ipynb)|Merged|[#48](https://github.com/tensorflow/gan/pull/48), [#50](https://github.com/tensorflow/gan/pull/50)|
+|<br />Add TPU support for ESRGAN<br /><img width=1/>|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tensorflow/gan/blob/master/tensorflow_gan/examples/esrgan/colab_notebooks/ESRGAN_TPU.ipynb)|Merged|[#48](https://github.com/tensorflow/gan/pull/48), [#50](https://github.com/tensorflow/gan/pull/50)|
 |<br />Add RaGAN loss function to TF-GAN<br /><img width=1/>|[Link](https://github.com/tensorflow/gan/tree/master/tensorflow_gan/python/losses)|Merged|[#46](https://github.com/tensorflow/gan/pull/46)|
 |<br />Train and Evaluate ControlGAN<sup>2</sup> model<br /><img width=1/>|[Link](ControlGAN/)| In progress |
 |<br />Write Colab notebook for training and evaluating <br>ControlGAN using TF-GAN|Link| In progress |
