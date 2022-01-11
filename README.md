@@ -8,7 +8,8 @@
 <h4 align="center">Mentor : <a href = "https://github.com/margaretmz">Margaret Maynard Reid</a> </h4>
 <p align="center"><strong>
   <a href="https://summerofcode.withgoogle.com/projects/#4563139045097472">Project Link</a> |
-  <a href="https://github.com/tensorflow/gan">TF-GAN Library</a>
+  <a href="https://github.com/tensorflow/gan">TF-GAN Library</a> |
+  <a href="https://blog.tensorflow.org/2022/01/summer-of-code.html">Blog Post</a>
   </strong>
 </p>
 
@@ -31,16 +32,6 @@ The Controllable text-to-image Generative Adversarial Network is used for the ta
 
 This is a work in progress and although the basic implementation is completed, the model is currently being trained on the Caltech-UCSD Birds dataset. Once the training process is done it will also be added to the TF-GAN library. 
 
-## Tasks
-|Tasks|Code|Status|TF-GAN PR|
-|:-:|:-:|:-:|:-:|
-|<br />Train and Evaluate ESRGAN<sup>1</sup><br /><img width=1/>|[Link](https://github.com/tensorflow/gan/tree/master/tensorflow_gan/examples/esrgan)|Merged|[#47](https://github.com/tensorflow/gan/pull/47), [#51](https://github.com/tensorflow/gan/pull/51)|
-|<br />Write Colab notebook for training and evaluating <br>ESRGAN using TF-GAN|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tensorflow/gan/blob/master/tensorflow_gan/examples/esrgan/colab_notebooks/ESRGAN_GPU.ipynb)|Merged|[#48](https://github.com/tensorflow/gan/pull/48), [#50](https://github.com/tensorflow/gan/pull/50)|
-|<br />Add TPU support for ESRGAN<br /><img width=1/>|[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tensorflow/gan/blob/master/tensorflow_gan/examples/esrgan/colab_notebooks/ESRGAN_TPU.ipynb)|Merged|[#48](https://github.com/tensorflow/gan/pull/48), [#50](https://github.com/tensorflow/gan/pull/50)|
-|<br />Add RaGAN loss function to TF-GAN<br /><img width=1/>|[Link](https://github.com/tensorflow/gan/tree/master/tensorflow_gan/python/losses)|Merged|[#46](https://github.com/tensorflow/gan/pull/46)|
-|<br />Train and Evaluate ControlGAN<sup>2</sup> model<br /><img width=1/>|[Link](ControlGAN/)| In progress |
-|<br />Write Colab notebook for training and evaluating <br>ControlGAN using TF-GAN|Link| In progress |
-
 ## What's Next? 
 Currently almost all the text-to-image generation models are being trained on datasets such as CUB and COCO for benchmarking their performance and as far as we know only results for such models are publicly available. Once the implementation of ControlGAN is completed, we plan to extend it to serve some real-world applications in areas such as art generation or image editing and for doing so we are looking for other relevant datasets to train the model. At the same time we are also looking for ways to improve its performance. 
 
@@ -48,6 +39,9 @@ At present there are not a lot of publicly available resources exploring the are
 
 ### Acknowledgement
 I would like to thank [Margaret Maynard Reid](https://github.com/margaretmz) and [Joel Shor](https://github.com/joel-shor) for their valuable guidance and mentorship. I would like to also thank [Google Cloud Platform](https://cloud.google.com/) and [TPU Research Cloud](https://sites.research.google/trc/) for extending their support which has helped in accelerating the development of this project.
+
+### Updates:
+* A blog post on this project is now published on the official TensorFlow Blog page : https://blog.tensorflow.org/2022/01/summer-of-code.html
 
 ### Reference
 [1] [ESRGAN: Enhanced Super-Resolution Generative Adversarial Networks](https://arxiv.org/abs/1809.00219)
